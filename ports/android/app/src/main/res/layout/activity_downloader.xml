@@ -7,14 +7,6 @@
     android:clickable="true"
     android:focusable="true">
 
-    <!-- Background artwork: placeholder while title video prepares -->
-    <ImageView
-        android:id="@+id/iv_download_bg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/bg_download" />
-
     <!-- Looping background title video: title.mp4 -->
     <TextureView
         android:id="@+id/texture_title_video"

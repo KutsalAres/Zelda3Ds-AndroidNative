@@ -985,7 +985,7 @@ public final class TriAevumConfigManager {
                 obj.put("camera_zoom_percent", 100);
                 obj.put("camera_fov_percent", 100);
                 org.json.JSONArray dpadChild = new org.json.JSONArray();
-                dpadChild.put("view").put("ocarina").put("item_zr").put("item_zl");
+                dpadChild.put("view").put("ocarina").put("boomerang").put("slingshot");
                 obj.put("dpad_child", dpadChild);
                 org.json.JSONArray dpadAdult = new org.json.JSONArray();
                 dpadAdult.put("view").put("ocarina").put("iron_boots").put("hover_boots");

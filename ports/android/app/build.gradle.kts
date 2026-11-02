@@ -13,9 +13,13 @@ dependencies {
 
 // Native compilation is a separate incremental build, never a Gradle side effect.
 val defaultStage = File(projectDir.parentFile, "staged_native_libs")
-val nativeStage = providers.gradleProperty("triaevumNativeStage").orElse(
-    providers.provider { if (defaultStage.isDirectory) defaultStage.absolutePath else null }
-)
+val nativeStage: Provider<File> = providers.gradleProperty("triaevumNativeStage")
+    .map { path ->
+        val f = File(path)
+        if (f.isAbsolute) f else File(projectDir.parentFile, path)
+    }
+    .orElse(defaultStage)
+
 android {
     namespace = "org.triaevum.android"
     compileSdk = 35
@@ -35,7 +39,10 @@ android {
         jvmTarget = "17"
     }
     sourceSets.getByName("main") {
-        if (nativeStage.isPresent) jniLibs.srcDir(nativeStage.get())
+        val stageDir = nativeStage.get()
+        if (stageDir.isDirectory) {
+            jniLibs.srcDir(stageDir)
+        }
     }
     packaging { jniLibs.useLegacyPackaging = true }
     androidResources {
@@ -47,11 +54,17 @@ tasks.register("checkNativeStage") {
         gradle.startParameter.taskNames.any { it.contains("assemble", ignoreCase = true) || it.contains("package", ignoreCase = true) }
     }
     doLast {
-        check(nativeStage.isPresent) {
-            "Supply -PtriaevumNativeStage from the Android native build."
+        val stageDir = nativeStage.get()
+        check(stageDir.isDirectory) {
+            "Native stage directory does not exist: ${stageDir.absolutePath}\n" +
+            "Supply -PtriaevumNativeStage=<path> from the Android native build, or place staged native libraries in ${stageDir.absolutePath}."
         }
         for (name in listOf("TriAevum", "triaevum_title_bootstrap", "triaevum_title_aot", "c++_shared")) {
-            check(file("${nativeStage.get()}/arm64-v8a/lib$name.so").isFile) { "Missing native library: $name" }
+            val libFile = File(stageDir, "arm64-v8a/lib$name.so")
+            check(libFile.isFile) {
+                "Missing native library: lib$name.so at ${libFile.absolutePath}\n" +
+                "Supply -PtriaevumNativeStage=<path> pointing to the staged native build output, or place native libraries in ${stageDir.absolutePath}/arm64-v8a/."
+            }
         }
     }
 }

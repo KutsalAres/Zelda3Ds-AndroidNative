@@ -7,14 +7,14 @@
 
 set -euo pipefail
 
-export PATH="$HOME/.local/bin:/home/amd/.local/bin:$PATH"
+export PATH="${ANDROID_HOME:-$HOME/Android/Sdk}/cmake/3.31.6/bin:$HOME/.local/bin:/home/amd/.local/bin:$PATH"
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 
 # Configurações padrão
 ROM_PATH=""
-BUILD_DIR="${TRIAEVUM_BUILD_DIR:-/home/windroid/triaevum-build}"
+BUILD_DIR="${TRIAEVUM_BUILD_DIR:-$HOME/triaevum-build}"
 TITLE_SOURCES="${TRIAEVUM_TRANSLATED_TITLE_DIR:-$BUILD_DIR/translated-sources}"
 JOBS="${CMAKE_BUILD_PARALLEL_LEVEL:-4}"
 INSTALL_ADB=0

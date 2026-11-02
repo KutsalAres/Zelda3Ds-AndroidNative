@@ -13,7 +13,7 @@
   "exit_items_to_save_screen": true,
   "camera_zoom_percent": 100,
   "camera_fov_percent": 100,
-  "dpad_child": ["view", "ocarina", "item_zr", "item_zl"],
+  "dpad_child": ["view", "ocarina", "boomerang", "slingshot"],
   "dpad_adult": ["view", "ocarina", "iron_boots", "hover_boots"],
   "free_camera_enabled": false,
   "free_camera_speed_level": 3,

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.hardware.input.InputManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.InputDevice;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +28,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -74,6 +77,9 @@ public final class TriAevumActivity extends Activity {
     private AndroidNativeInputTarget mInputTarget;
     private Thread mGameThread;
     private boolean mGameStarted = false;
+
+    private InputManager mInputManager;
+    private InputManager.InputDeviceListener mInputDeviceListener;
 
     private TextView mTvFpsCounter;
     private final Handler mFpsHandler = new Handler(Looper.getMainLooper());
@@ -308,6 +314,33 @@ public final class TriAevumActivity extends Activity {
             mLayout.addView(mWindroidOverlay, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             Log.i(TAG, "Windroid virtual controller overlay initialized successfully");
+
+            // Monitor physical controller (Bluetooth/USB) connections to automatically hide/show virtual controls
+            try {
+                mInputManager = (InputManager) getSystemService(Context.INPUT_SERVICE);
+                if (mInputManager != null) {
+                    mInputDeviceListener = new InputManager.InputDeviceListener() {
+                        @Override
+                        public void onInputDeviceAdded(int deviceId) {
+                            updateControllerConnectionState();
+                        }
+
+                        @Override
+                        public void onInputDeviceRemoved(int deviceId) {
+                            updateControllerConnectionState();
+                        }
+
+                        @Override
+                        public void onInputDeviceChanged(int deviceId) {
+                            updateControllerConnectionState();
+                        }
+                    };
+                    mInputManager.registerInputDeviceListener(mInputDeviceListener, null);
+                }
+                updateControllerConnectionState();
+            } catch (Throwable t) {
+                Log.w(TAG, "Failed to register InputDeviceListener", t);
+            }
         } catch (Exception error) {
             Log.e(TAG, "Failed to initialize Windroid virtual controller overlay", error);
         }
@@ -520,6 +553,7 @@ public final class TriAevumActivity extends Activity {
         nativeOnResume();
         updateFpsCounterVisibility();
         syncDisplayRefreshRate();
+        updateControllerConnectionState();
     }
 
     @Override
@@ -556,12 +590,51 @@ public final class TriAevumActivity extends Activity {
         }
     }
 
+    private boolean isPhysicalGamepadConnected() {
+        int[] deviceIds = InputDevice.getDeviceIds();
+        for (int id : deviceIds) {
+            InputDevice dev = InputDevice.getDevice(id);
+            if (dev != null && !dev.isVirtual()) {
+                int sources = dev.getSources();
+                if (((sources & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD) ||
+                    ((sources & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void updateControllerConnectionState() {
+        final boolean connected = isPhysicalGamepadConnected();
+        runOnUiThread(() -> {
+            if (mWindroidOverlay != null) {
+                boolean wasConnected = mWindroidOverlay.isGamepadConnected();
+                if (wasConnected != connected) {
+                    mWindroidOverlay.setGamepadConnected(connected);
+                    if (connected) {
+                        Toast.makeText(this, "Controle conectado: controles na tela ocultados", Toast.LENGTH_SHORT).show();
+                        Log.i(TAG, "Controle físico detectado - controles virtuais ocultados");
+                    } else {
+                        Toast.makeText(this, "Controle desconectado: controles na tela restaurados", Toast.LENGTH_SHORT).show();
+                        Log.i(TAG, "Controle físico desconectado - controles virtuais restaurados");
+                    }
+                }
+            }
+        });
+    }
+
     @Override
     public boolean dispatchKeyEvent(android.view.KeyEvent event) {
+        int source = event.getSource();
+        if (((source & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD ||
+             (source & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK) &&
+            mWindroidOverlay != null && !mWindroidOverlay.isGamepadConnected()) {
+            updateControllerConnectionState();
+        }
         if (mInputTarget != null) {
             int keyCode = event.getKeyCode();
             if (keyCode == android.view.KeyEvent.KEYCODE_BACK) {
-                int source = event.getSource();
                 if ((source & android.view.InputDevice.SOURCE_GAMEPAD) != android.view.InputDevice.SOURCE_GAMEPAD &&
                     (source & android.view.InputDevice.SOURCE_JOYSTICK) != android.view.InputDevice.SOURCE_JOYSTICK) {
                     return super.dispatchKeyEvent(event);
@@ -585,6 +658,9 @@ public final class TriAevumActivity extends Activity {
     public boolean onGenericMotionEvent(android.view.MotionEvent event) {
         if (mInputTarget != null && ((event.getSource() & android.view.InputDevice.SOURCE_JOYSTICK) == android.view.InputDevice.SOURCE_JOYSTICK ||
                                      (event.getSource() & android.view.InputDevice.SOURCE_GAMEPAD) == android.view.InputDevice.SOURCE_GAMEPAD)) {
+            if (mWindroidOverlay != null && !mWindroidOverlay.isGamepadConnected()) {
+                updateControllerConnectionState();
+            }
             if (event.getAction() == android.view.MotionEvent.ACTION_MOVE) {
                 float x = event.getAxisValue(android.view.MotionEvent.AXIS_X);
                 float y = event.getAxisValue(android.view.MotionEvent.AXIS_Y);
@@ -1104,6 +1180,11 @@ public final class TriAevumActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        if (mInputManager != null && mInputDeviceListener != null) {
+            try {
+                mInputManager.unregisterInputDeviceListener(mInputDeviceListener);
+            } catch (Throwable ignored) {}
+        }
         if (mPrefsListener != null) {
             getApplicationContext().getSharedPreferences("org.triaevum.android_preferences", Context.MODE_PRIVATE)
                 .unregisterOnSharedPreferenceChangeListener(mPrefsListener);

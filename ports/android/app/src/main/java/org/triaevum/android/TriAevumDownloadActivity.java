@@ -61,7 +61,6 @@ public class TriAevumDownloadActivity extends Activity {
     private static final String PREF_ROM_DIR_URI = "selected_rom_directory_uri";
 
     private TextureView mTextureTitleVideo;
-    private ImageView mIvBackground;
     private MediaPlayer mMediaPlayer;
     private MediaPlayer mMusicPlayer;
     private Surface mVideoSurface;
@@ -111,7 +110,6 @@ public class TriAevumDownloadActivity extends Activity {
 
         mRootLayout            = findViewById(R.id.layout_downloader_root);
         mTextureTitleVideo     = findViewById(R.id.texture_title_video);
-        mIvBackground          = findViewById(R.id.iv_download_bg);
         mTvStatus              = findViewById(R.id.tv_download_status);
         mTvPercent             = findViewById(R.id.tv_download_percent);
         mTvDetails             = findViewById(R.id.tv_download_details);
@@ -291,25 +289,9 @@ public class TriAevumDownloadActivity extends Activity {
                 } catch (Exception ignored) {}
             });
 
-            mMediaPlayer.setOnInfoListener((mp, what, extra) -> {
-                if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                    if (mIvBackground != null) {
-                        mIvBackground.animate().alpha(0f).setDuration(250).withEndAction(() -> {
-                            mIvBackground.setVisibility(View.GONE);
-                        }).start();
-                    }
-                    return true;
-                }
-                return false;
-            });
-
             mMediaPlayer.setOnErrorListener((mp, what, extra) -> {
                 Log.e(TAG, "Erro no MediaPlayer de title: what=" + what + ", extra=" + extra);
                 releaseMediaPlayer();
-                if (mIvBackground != null) {
-                    mIvBackground.setVisibility(View.VISIBLE);
-                    mIvBackground.setAlpha(1.0f);
-                }
                 return true;
             });
 

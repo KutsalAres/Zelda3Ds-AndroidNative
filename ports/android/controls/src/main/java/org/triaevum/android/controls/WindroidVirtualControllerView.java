@@ -153,8 +153,27 @@ public class WindroidVirtualControllerView extends View {
     private static final String PREF_HAPTIC = "EmulationMenuSettings_HapticFeedback";
     private static final String PREF_TOUCH_ENABLED = "EmulationMenuSettings_TouchEnabled";
     private boolean mShowControls = true;
+    private boolean mGamepadConnected = false;
     private boolean mHapticFeedbackEnabled = true;
     private boolean mTouchEnabled = false;
+
+    public boolean areControlsVisible() {
+        return mShowControls && !mGamepadConnected;
+    }
+
+    public boolean isGamepadConnected() {
+        return mGamepadConnected;
+    }
+
+    public void setGamepadConnected(boolean connected) {
+        if (mGamepadConnected != connected) {
+            mGamepadConnected = connected;
+            if (connected) {
+                releaseAll();
+            }
+            postInvalidate();
+        }
+    }
 
     public boolean isTouchEnabled() {
         return mTouchEnabled;
@@ -421,7 +440,7 @@ public class WindroidVirtualControllerView extends View {
         // ---- Settings gear button (always drawn, scales uniformly with min floor) ----
         drawSettingsButton(canvas, alphaFactor);
 
-        if (!mShowControls && !isEditing) {
+        if (!areControlsVisible() && !isEditing) {
             return;
         }
 
@@ -856,7 +875,7 @@ public class WindroidVirtualControllerView extends View {
                     }
                 }
 
-                if (!hit && mShowControls) {
+                if (!hit && areControlsVisible()) {
                     // 1. Check ABXY, Triggers (LT, LB, RT, RB), Start and Select
                     for (VirtualControllerButton btn : buttonList) {
                         if (detectClick(px, py, btn.x, btn.y, btn.radius, btn.shape)) {
@@ -917,11 +936,11 @@ public class WindroidVirtualControllerView extends View {
                     float curX = event.getX(i);
                     float curY = event.getY(i);
 
-                    if (mShowControls && leftAnalog.isPressed && leftAnalog.fingerId == pId) {
+                    if (areControlsVisible() && leftAnalog.isPressed && leftAnalog.fingerId == pId) {
                         updateAnalogPosition(curX - leftAnalog.x, curY - leftAnalog.y, true);
-                    } else if (mShowControls && rightAnalog.isPressed && rightAnalog.fingerId == pId) {
+                    } else if (areControlsVisible() && rightAnalog.isPressed && rightAnalog.fingerId == pId) {
                         updateAnalogPosition(curX - rightAnalog.x, curY - rightAnalog.y, false);
-                    } else if (mShowControls && dpad.isPressed && dpad.fingerId == pId) {
+                    } else if (areControlsVisible() && dpad.isPressed && dpad.fingerId == pId) {
                         float posX = curX - dpad.x;
                         float posY = curY - dpad.y;
                         dpad.fingerX = posX;
