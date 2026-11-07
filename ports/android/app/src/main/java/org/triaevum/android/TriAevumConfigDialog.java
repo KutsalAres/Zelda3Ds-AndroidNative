@@ -19,6 +19,7 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.List;
 import org.triaevum.android.controls.WindroidVirtualControllerView;
 
 /**
@@ -50,6 +51,7 @@ public final class TriAevumConfigDialog extends Dialog {
 
     // Geral
     private Spinner mSpLanguage;
+    private List<TriAevumConfigManager.LanguageOption> mLanguageOptions;
     private Spinner mSpSurfaceRes;
     private TextView mTvSaveStatus;
     private CheckBox mCbAutoSave;
@@ -291,11 +293,16 @@ public final class TriAevumConfigDialog extends Dialog {
     private void loadFromConfig() {
         Log.d(TAG, "--- loadFromConfig START ---");
         // Language
-        setupSpinner(mSpLanguage, TriAevumConfigManager.LANGUAGE_LABELS, null);
+        mLanguageOptions = mConfig.getAvailableLanguages();
+        String[] langLabels = new String[mLanguageOptions.size()];
+        for (int i = 0; i < mLanguageOptions.size(); i++) {
+            langLabels[i] = mLanguageOptions.get(i).label;
+        }
+        setupSpinner(mSpLanguage, langLabels, null);
         String langCode = mConfig.getLanguageCode();
         Log.d(TAG, "  language: " + langCode);
-        for (int i = 0; i < TriAevumConfigManager.LANGUAGE_CODES.length; i++) {
-            if (TriAevumConfigManager.LANGUAGE_CODES[i].equals(langCode)) {
+        for (int i = 0; i < mLanguageOptions.size(); i++) {
+            if (mLanguageOptions.get(i).code.equals(langCode)) {
                 mSpLanguage.setSelection(i);
                 break;
             }
@@ -1009,10 +1016,26 @@ public final class TriAevumConfigDialog extends Dialog {
             Log.d(TAG, "--- saveToConfig START ---");
             // Geral
             int langIdx = mSpLanguage.getSelectedItemPosition();
-            if (langIdx >= 0 && langIdx < TriAevumConfigManager.LANGUAGE_CODES.length) {
+            if (mLanguageOptions != null && langIdx >= 0 && langIdx < mLanguageOptions.size()) {
+                String oldLang = mConfig.getLanguageCode();
+                String lang = mLanguageOptions.get(langIdx).code;
+                Log.d(TAG, "  SET language -> " + lang);
+                mConfig.setLanguageCode(lang);
+                if (!lang.equalsIgnoreCase(oldLang)) {
+                    Toast.makeText(getContext(),
+                        "Idioma alterado para " + mLanguageOptions.get(langIdx).label + ".\nReinicie o jogo para aplicar as alterações.",
+                        Toast.LENGTH_LONG).show();
+                }
+            } else if (langIdx >= 0 && langIdx < TriAevumConfigManager.LANGUAGE_CODES.length) {
+                String oldLang = mConfig.getLanguageCode();
                 String lang = TriAevumConfigManager.LANGUAGE_CODES[langIdx];
                 Log.d(TAG, "  SET language -> " + lang);
                 mConfig.setLanguageCode(lang);
+                if (!lang.equalsIgnoreCase(oldLang)) {
+                    Toast.makeText(getContext(),
+                        "Idioma alterado para " + TriAevumConfigManager.LANGUAGE_LABELS[langIdx] + ".\nReinicie o jogo para aplicar as alterações.",
+                        Toast.LENGTH_LONG).show();
+                }
             }
 
             int resIdx = mSpSurfaceRes.getSelectedItemPosition();

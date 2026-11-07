@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Reads and writes all TriAevum config files stored in external app storage.
@@ -27,8 +29,12 @@ public final class TriAevumConfigManager {
     private static final String TAG = "TriAevumConfig";
 
     // ------- game_language.json -------
-    public static final String[] LANGUAGE_LABELS  = { "English", "Francais", "Espanol" };
-    public static final String[] LANGUAGE_CODES   = { "en",      "fr",       "es"      };
+    public static final String[] LANGUAGE_LABELS  = {
+        "English", "Português (Brasil)", "Español", "Français", "Deutsch", "Italiano"
+    };
+    public static final String[] LANGUAGE_CODES   = {
+        "en",      "pt",                 "es",      "fr",       "de",      "it"
+    };
 
     // ------- oot3d_native_game.json ---
     public static final String[] RENDER_SCALE_LABELS = {
@@ -245,14 +251,189 @@ public final class TriAevumConfigManager {
     // game_language.json
     // =========================================================================
 
+    public static class LanguageOption {
+        public final String code;
+        public final String label;
+        public LanguageOption(String code, String label) {
+            this.code = code;
+            this.label = label;
+        }
+    }
+
+    public List<LanguageOption> getAvailableLanguages() {
+        List<LanguageOption> list = new ArrayList<>();
+        JSONObject json = readJson("game_language.json");
+        JSONArray arr = json.optJSONArray("available");
+        if (arr != null && arr.length() > 0) {
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject item = arr.optJSONObject(i);
+                if (item != null) {
+                    String code = item.optString("code", "");
+                    String label = item.optString("label", code);
+                    if (!code.isEmpty()) {
+                        list.add(new LanguageOption(code, label));
+                    }
+                }
+            }
+        }
+        if (list.isEmpty()) {
+            for (int i = 0; i < LANGUAGE_CODES.length; i++) {
+                list.add(new LanguageOption(LANGUAGE_CODES[i], LANGUAGE_LABELS[i]));
+            }
+        } else {
+            boolean hasPt = false;
+            for (LanguageOption opt : list) {
+                if ("pt".equalsIgnoreCase(opt.code)) {
+                    hasPt = true;
+                    break;
+                }
+            }
+            if (!hasPt) {
+                int insertIdx = 0;
+                for (int i = 0; i < list.size(); i++) {
+                    if ("en".equalsIgnoreCase(list.get(i).code)) {
+                        insertIdx = i + 1;
+                        break;
+                    }
+                }
+                list.add(insertIdx, new LanguageOption("pt", "Português (Brasil)"));
+            }
+        }
+        return list;
+    }
+
     public String getLanguageCode() {
         return readJson("game_language.json").optString("selected", "en");
     }
 
+    public static String getLanguageLabel(String code) {
+        if ("pt".equalsIgnoreCase(code)) return "Português (Brasil)";
+        if ("en".equalsIgnoreCase(code)) return "English";
+        if ("es".equalsIgnoreCase(code)) return "Español";
+        if ("fr".equalsIgnoreCase(code)) return "Français";
+        if ("de".equalsIgnoreCase(code)) return "Deutsch";
+        if ("it".equalsIgnoreCase(code)) return "Italiano";
+        return code;
+    }
+
+    public static int getLanguageSystemId(String code) {
+        if ("pt".equalsIgnoreCase(code)) return 9;
+        if ("en".equalsIgnoreCase(code)) return 1;
+        if ("fr".equalsIgnoreCase(code)) return 2;
+        if ("de".equalsIgnoreCase(code)) return 3;
+        if ("it".equalsIgnoreCase(code)) return 4;
+        if ("es".equalsIgnoreCase(code)) return 5;
+        return 1;
+    }
+
+    public void applyLanguageAssets(String code) {
+        if (mExternalDir == null) return;
+        boolean isPt = "pt".equalsIgnoreCase(code);
+
+        File romfsOrig = new File(mExternalDir, "romfs.original.bin");
+        File romfsPt = new File(mExternalDir, "romfs.pt.bin");
+        File romfsBak = new File(mExternalDir, "romfs.bin.bak-original");
+        File romfsActive = new File(mExternalDir, "romfs.bin");
+
+        // Ensure master files exist
+        if (!romfsOrig.exists()) {
+            if (romfsBak.exists()) {
+                try { Files.copy(romfsBak.toPath(), romfsOrig.toPath()); } catch (Exception ignored) {}
+            } else if (romfsActive.exists() && romfsActive.length() == 473522176L) {
+                try { Files.copy(romfsActive.toPath(), romfsOrig.toPath()); } catch (Exception ignored) {}
+            }
+        }
+        if (!romfsPt.exists() && romfsActive.exists() && romfsActive.length() == 478385348L) {
+            try { Files.copy(romfsActive.toPath(), romfsPt.toPath()); } catch (Exception ignored) {}
+        }
+
+        File atlasOrig = new File(mExternalDir, "atlas_overrides.original.o3tu");
+        File atlasPt = new File(mExternalDir, "atlas_overrides.pt.o3tu");
+        File atlasBak = new File(mExternalDir, "atlas_overrides.o3tu.bak-original");
+        File atlasActive = new File(mExternalDir, "atlas_overrides.o3tu");
+
+        if (!atlasOrig.exists() && atlasBak.exists()) {
+            try { Files.copy(atlasBak.toPath(), atlasOrig.toPath()); } catch (Exception ignored) {}
+        }
+        if (!atlasPt.exists() && atlasActive.exists()) {
+            try { Files.copy(atlasActive.toPath(), atlasPt.toPath()); } catch (Exception ignored) {}
+        }
+
+        File tagFile = new File(mExternalDir, "pt_br.tag");
+
+        // Update process-manifest.json to point to the appropriate RomFS
+        JSONObject manifest = readJson("process-manifest.json");
+        if (manifest != null) {
+            JSONObject source = manifest.optJSONObject("source");
+            if (source != null) {
+                try {
+                    if (isPt && romfsPt.exists()) {
+                        source.put("romfs_image_path", "romfs.pt.bin");
+                        source.put("romfs_image_file_size", 478385348L);
+                        source.put("romfs_service_size", 478385348L);
+                    } else if (!isPt && romfsOrig.exists()) {
+                        source.put("romfs_image_path", "romfs.original.bin");
+                        source.put("romfs_image_file_size", 473522176L);
+                        source.put("romfs_service_size", 473522176L);
+                    }
+                    writeJson("process-manifest.json", manifest);
+                } catch (JSONException ignored) {}
+            }
+        }
+
+        // Switch TopScreen texture overrides (title screen and UI logo)
+        if (isPt) {
+            if (atlasPt.exists()) {
+                try {
+                    Files.copy(atlasPt.toPath(), atlasActive.toPath(),
+                        java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                } catch (Exception ignored) {}
+            }
+            try {
+                tagFile.createNewFile();
+            } catch (Exception ignored) {}
+        } else {
+            if (atlasOrig.exists()) {
+                try {
+                    Files.copy(atlasOrig.toPath(), atlasActive.toPath(),
+                        java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                } catch (Exception ignored) {}
+            }
+            if (tagFile.exists()) {
+                tagFile.delete();
+            }
+        }
+    }
+
     public void setLanguageCode(String code) {
         JSONObject obj = readJson("game_language.json");
-        try { obj.put("selected", code); } catch (JSONException ignored) {}
+        try {
+            obj.put("selected", code);
+            JSONArray arr = obj.optJSONArray("available");
+            if (arr == null) {
+                arr = new JSONArray();
+                obj.put("available", arr);
+            }
+            boolean found = false;
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject item = arr.optJSONObject(i);
+                if (item != null && code.equalsIgnoreCase(item.optString("code"))) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                JSONObject entry = new JSONObject();
+                entry.put("code", code);
+                entry.put("label", getLanguageLabel(code));
+                entry.put("system_id", getLanguageSystemId(code));
+                arr.put(entry);
+            }
+        } catch (JSONException ignored) {}
         writeJson("game_language.json", obj);
+
+        // Switch underlying RomFS and atlas assets according to selection
+        applyLanguageAssets(code);
     }
 
     // =========================================================================

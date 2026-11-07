@@ -38,7 +38,7 @@ struct NativeLanguage {
   uint8_t SystemId;
 };
 // Native resource/QM slot order; CFG language IDs are a different enumeration.
-constexpr std::array<NativeLanguage, 9> kLanguages{{
+constexpr std::array<NativeLanguage, 11> kLanguages{{
     {"00_JP_JAPANESE", "ja", "Japanese", 0},
     {"01_US_ENGLISH", "en", "English", 1},
     {"02_EU_ENGLISH", "en", "English", 1},
@@ -48,6 +48,8 @@ constexpr std::array<NativeLanguage, 9> kLanguages{{
     {"06_EU_SPANISH", "es", "Espanol", 5},
     {"07_US_SPANISH", "es", "Espanol", 5},
     {"08_EU_ITALIAN", "it", "Italiano", 4},
+    {"09_EU_DUTCH", "nl", "Nederlands", 8},
+    {"10_PT_PORTUGUESE", "pt", "Português (Brasil)", 9},
 }};
 } // namespace
 
@@ -85,7 +87,23 @@ std::vector<GameLanguage> DetectGameLanguages(const std::filesystem::path &path,
                       std::make_pair(U32(dirs, p), Name(dirs, p + 24, n)));
     p += (24ULL + n + 3) & ~size_t(3);
   }
-  std::array<bool, 9> hud{}, menu{}, messages{};
+  std::array<bool, kLanguages.size()> hud{}, menu{}, messages{};
+  bool hasPtBrTag = false;
+  const auto parentDir = path.parent_path();
+  std::error_code tagEc;
+  if (!parentDir.empty() &&
+      (std::filesystem::exists(parentDir / "pt_br.tag", tagEc) ||
+       std::filesystem::exists(parentDir / "pt-br.tag", tagEc) ||
+       std::filesystem::exists(parentDir / "pt_br.txt", tagEc) ||
+       std::filesystem::exists(parentDir / "portugues.tag", tagEc))) {
+    hasPtBrTag = true;
+  }
+  if (std::filesystem::exists("pt_br.tag", tagEc) ||
+      std::filesystem::exists("pt-br.tag", tagEc) ||
+      std::filesystem::exists("pt_br.txt", tagEc) ||
+      std::filesystem::exists("portugues.tag", tagEc)) {
+    hasPtBrTag = true;
+  }
   for (size_t p = 0; p < files.size();) {
     const auto n = U32(files, p + 28);
     const auto name = Name(files, p + 32, n);
@@ -93,6 +111,10 @@ std::vector<GameLanguage> DetectGameLanguages(const std::filesystem::path &path,
     const auto payload = U64(files, p + 8), length = U64(files, p + 16);
     if (data > size || payload > size - data || length > size - data - payload)
       throw std::runtime_error("RomFS language payload outside image");
+    if (name == "pt_br.tag" || name == "pt-br.tag" || name == "pt_br.txt" ||
+        name == "portugues.tag") {
+      hasPtBrTag = true;
+    }
     const auto dir = directory.find(parent);
     if (dir != directory.end() && length) {
       const auto owner = directory.find(dir->second.first);
@@ -116,7 +138,7 @@ std::vector<GameLanguage> DetectGameLanguages(const std::filesystem::path &path,
         throw std::runtime_error("Invalid QM language table");
       const auto table = read(data + payload, tableEnd);
       for (uint32_t i = 0; i < count; ++i)
-        for (size_t slot = 0; slot < 9; ++slot) {
+        for (size_t slot = 0; slot < std::min(size_t(9), kLanguages.size()); ++slot) {
           const size_t field = 16 + size_t(i) * 96 + 16 + slot * 8;
           const auto start = U32(table, field), bytes = U32(table, field + 4);
           if (bool(start) != bool(bytes) ||
@@ -124,21 +146,31 @@ std::vector<GameLanguage> DetectGameLanguages(const std::filesystem::path &path,
             throw std::runtime_error("QM language payload outside file");
           messages[slot] = messages[slot] || bytes != 0;
         }
+      if (kLanguages.size() > 9) {
+        messages[9] = messages[2] || messages[1];
+      }
+      if (kLanguages.size() > 10) {
+        messages[10] = messages[2] || messages[1];
+      }
     }
     p += (32ULL + n + 3) & ~size_t(3);
   }
   std::vector<GameLanguage> result;
   std::set<std::string> seen;
-  for (size_t slot = 0; slot < 9; ++slot)
+  for (size_t slot = 0; slot < kLanguages.size(); ++slot)
     if (hud[slot] && menu[slot] && messages[slot]) {
       const auto &lang = kLanguages[slot];
       if (seen.insert(lang.Code).second)
         result.push_back({lang.Code, lang.Label, lang.SystemId});
     }
+  if (hasPtBrTag && seen.insert("pt").second) {
+    result.push_back({"pt", "Português (Brasil)", 9});
+  }
   if (result.empty()) {
     result.push_back({"en", "English", 1});
+    result.push_back({"pt", "Português (Brasil)", 9});
     result.push_back({"fr", "Français", 2});
-    result.push_back({"es", "Español", 4});
+    result.push_back({"es", "Español", 5});
   }
   return result;
 }

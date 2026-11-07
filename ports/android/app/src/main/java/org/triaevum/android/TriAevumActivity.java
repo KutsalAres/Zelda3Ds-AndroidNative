@@ -502,6 +502,9 @@ public final class TriAevumActivity extends Activity {
         if (mGameStarted) return;
         mGameStarted = true;
 
+        TriAevumConfigManager cfg = new TriAevumConfigManager(this);
+        cfg.applyLanguageAssets(cfg.getLanguageCode());
+
         File root = getExternalFilesDir(null);
         final String[] args = new String[] {
             "TriAevum",

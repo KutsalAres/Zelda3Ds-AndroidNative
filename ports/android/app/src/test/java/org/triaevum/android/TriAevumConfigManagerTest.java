@@ -104,7 +104,7 @@ public final class TriAevumConfigManagerTest {
         JSONObject gfx = root.getJSONObject("Graphics");
 
         JSONObject toon = gfx.getJSONObject("Effects").getJSONObject("Toon");
-        assertEquals("PostProcessPreview", toon.getString("Mode"));
+        assertEquals("PicaMaterial", toon.getString("Mode"));
         assertTrue(toon.getBoolean("OutlineEnabled"));
         assertEquals(1.0, toon.getDouble("OutlineWidth"), 0.001);
 

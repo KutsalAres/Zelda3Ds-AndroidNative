@@ -81,8 +81,9 @@ export ANDROID_HOME="${ANDROID_HOME:-$HOME/Android/Sdk}"
 NDK="${ANDROID_NDK_ROOT:-${ANDROID_NDK_HOME:-${NDK:-}}}"
 if [ -z "$NDK" ] || [ ! -d "$NDK" ]; then
     for candidate in \
+        "$HOME/Android/Sdk/ndk/28.2.13676358" \
         /home/windroid/Android/Sdk/ndk/28.2.13676358 \
-        /home/windroid/Android/Sdk/ndk/* \
+        ${ANDROID_HOME:-$HOME/Android/Sdk}/ndk/28.2.13676358 \
         ${ANDROID_HOME:-/home/windroid/Android/Sdk}/ndk/* \
         $HOME/Android/Sdk/ndk/*; do
         if [ -f "$candidate/build/cmake/android.toolchain.cmake" ]; then
