@@ -9,6 +9,17 @@ set -euo pipefail
 
 export PATH="${ANDROID_HOME:-$HOME/Android/Sdk}/cmake/3.31.6/bin:$HOME/.local/bin:/home/amd/.local/bin:$PATH"
 
+# Auto-detectar JDK 17 se JAVA_HOME não estiver definido ou apontar para versão incompatível
+if [ -z "${JAVA_HOME:-}" ] || ! "${JAVA_HOME}/bin/java" -version 2>&1 | grep -q '"17\.'; then
+    for cand in /usr/lib/jvm/java-17-openjdk-amd64 /usr/lib/jvm/java-1.17.0-openjdk-amd64 /usr/lib/jvm/openjdk-17; do
+        if [ -d "$cand" ]; then
+            export JAVA_HOME="$cand"
+            export PATH="$JAVA_HOME/bin:$PATH"
+            break
+        fi
+    done
+fi
+
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 
