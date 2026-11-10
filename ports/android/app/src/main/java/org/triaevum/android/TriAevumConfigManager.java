@@ -341,9 +341,13 @@ public final class TriAevumConfigManager {
                 try { Files.copy(romfsBak.toPath(), romfsOrig.toPath()); } catch (Exception ignored) {}
             } else if (romfsActive.exists() && romfsActive.length() == 473522176L) {
                 try { Files.copy(romfsActive.toPath(), romfsOrig.toPath()); } catch (Exception ignored) {}
+            } else if (romfsActive.exists() && romfsActive.length() != PtBrRomFsPatcher.EXPECTED_PTBR_ROMFS_SIZE) {
+                try { Files.copy(romfsActive.toPath(), romfsOrig.toPath()); } catch (Exception ignored) {}
             }
         }
-        if (!romfsPt.exists() && romfsActive.exists() && romfsActive.length() == 478385348L) {
+        if (!romfsPt.exists() && romfsOrig.exists() && mContext != null) {
+            PtBrRomFsPatcher.applyTranslationPack(mContext, romfsOrig, romfsPt, null);
+        } else if (!romfsPt.exists() && romfsActive.exists() && romfsActive.length() == PtBrRomFsPatcher.EXPECTED_PTBR_ROMFS_SIZE) {
             try { Files.copy(romfsActive.toPath(), romfsPt.toPath()); } catch (Exception ignored) {}
         }
 
@@ -352,11 +356,23 @@ public final class TriAevumConfigManager {
         File atlasBak = new File(mExternalDir, "atlas_overrides.o3tu.bak-original");
         File atlasActive = new File(mExternalDir, "atlas_overrides.o3tu");
 
-        if (!atlasOrig.exists() && atlasBak.exists()) {
-            try { Files.copy(atlasBak.toPath(), atlasOrig.toPath()); } catch (Exception ignored) {}
+        if (!atlasOrig.exists()) {
+            if (atlasBak.exists()) {
+                try { Files.copy(atlasBak.toPath(), atlasOrig.toPath()); } catch (Exception ignored) {}
+            } else if (mContext != null) {
+                try (InputStream in = mContext.getAssets().open("game/atlas_overrides.original.o3tu");
+                     FileOutputStream out = new FileOutputStream(atlasOrig)) {
+                    byte[] buf = new byte[16384]; int len;
+                    while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
+                } catch (Exception ignored) {}
+            }
         }
-        if (!atlasPt.exists() && atlasActive.exists()) {
-            try { Files.copy(atlasActive.toPath(), atlasPt.toPath()); } catch (Exception ignored) {}
+        if (!atlasPt.exists() && mContext != null) {
+            try (InputStream in = mContext.getAssets().open("game/atlas_overrides.pt.o3tu");
+                 FileOutputStream out = new FileOutputStream(atlasPt)) {
+                byte[] buf = new byte[16384]; int len;
+                while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
+            } catch (Exception ignored) {}
         }
 
         File tagFile = new File(mExternalDir, "pt_br.tag");

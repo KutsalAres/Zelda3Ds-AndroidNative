@@ -168,6 +168,24 @@ public class TriAevumDownloadActivity extends Activity {
             new File(targetDir, "resources").mkdirs();
             new File(targetDir, "savedata").mkdirs();
             new File(targetDir, "shader_cache").mkdirs();
+
+            File romfsActive = new File(targetDir, "romfs.bin");
+            File romfsOrig = new File(targetDir, "romfs.original.bin");
+            File romfsPt = new File(targetDir, "romfs.pt.bin");
+            if (!romfsOrig.exists() && romfsActive.exists() && romfsActive.length() != PtBrRomFsPatcher.EXPECTED_PTBR_ROMFS_SIZE) {
+                try {
+                    Files.copy(romfsActive.toPath(), romfsOrig.toPath());
+                } catch (Exception ignored) {}
+            }
+            if (!romfsPt.exists() && romfsOrig.exists()) {
+                PtBrRomFsPatcher.applyTranslationPack(this, romfsOrig, romfsPt, null);
+            }
+            if (java.util.Locale.getDefault().getLanguage().equals("pt")) {
+                TriAevumConfigManager cfg = new TriAevumConfigManager(this);
+                if (!"pt".equalsIgnoreCase(cfg.getLanguageCode())) {
+                    cfg.setLanguageCode("pt");
+                }
+            }
         }
         mReadyToStart = true;
         mIsDownloading = false;
@@ -727,8 +745,35 @@ public class TriAevumDownloadActivity extends Activity {
             Log.w(TAG, "Aviso ao normalizar RomFS", e);
         }
 
+        // Criar romfs.original.bin como master original
+        File romfsOrig = new File(targetDir, "romfs.original.bin");
+        if (!romfsOrig.exists()) {
+            try {
+                Files.copy(destRomfs.toPath(), romfsOrig.toPath());
+            } catch (Exception ignored) {}
+        }
+
+        // Aplicar tradução PT-BR embutida no romfs.pt.bin
+        File romfsPt = new File(targetDir, "romfs.pt.bin");
+        mMainHandler.post(() -> {
+            mTvStatus.setText("Aplicando tradução PT-BR...");
+            mTvDetails.setText("Modificando diálogos e texturas...");
+        });
+        PtBrRomFsPatcher.applyTranslationPack(this, romfsOrig.exists() ? romfsOrig : destRomfs, romfsPt, (msg, pct) -> {
+            mMainHandler.post(() -> {
+                mTvDetails.setText(msg);
+                mPbDownload.setProgress(pct);
+                mTvPercent.setText(pct + "%");
+            });
+        });
+
         // 4. Descompactar bundled assets (launch config, overrides, manifest)
         unpackBundledAssets(targetDir);
+
+        if (java.util.Locale.getDefault().getLanguage().equals("pt")) {
+            TriAevumConfigManager cfgMgr = new TriAevumConfigManager(this);
+            cfgMgr.setLanguageCode("pt");
+        }
 
         // 5. Criar diretórios obrigatórios
         new File(targetDir, "resources").mkdirs();
@@ -762,7 +807,34 @@ public class TriAevumDownloadActivity extends Activity {
 
         tempRomFile.delete();
 
+        // Criar romfs.original.bin e romfs.pt.bin
+        File destRomfs = new File(targetDir, "romfs.bin");
+        File romfsOrig = new File(targetDir, "romfs.original.bin");
+        if (!romfsOrig.exists() && destRomfs.exists()) {
+            try {
+                Files.copy(destRomfs.toPath(), romfsOrig.toPath());
+            } catch (Exception ignored) {}
+        }
+
+        File romfsPt = new File(targetDir, "romfs.pt.bin");
+        mMainHandler.post(() -> {
+            mTvStatus.setText("Aplicando tradução PT-BR...");
+            mTvDetails.setText("Modificando diálogos e texturas...");
+        });
+        PtBrRomFsPatcher.applyTranslationPack(this, romfsOrig.exists() ? romfsOrig : destRomfs, romfsPt, (msg, pct) -> {
+            mMainHandler.post(() -> {
+                mTvDetails.setText(msg);
+                mPbDownload.setProgress(pct);
+                mTvPercent.setText(pct + "%");
+            });
+        });
+
         unpackBundledAssets(targetDir);
+
+        if (java.util.Locale.getDefault().getLanguage().equals("pt")) {
+            TriAevumConfigManager cfgMgr = new TriAevumConfigManager(this);
+            cfgMgr.setLanguageCode("pt");
+        }
 
         new File(targetDir, "resources").mkdirs();
         new File(targetDir, "savedata").mkdirs();
@@ -858,7 +930,9 @@ public class TriAevumDownloadActivity extends Activity {
                             || filename.equals("TriAevum.android.launch.json")
                             || filename.equals("topscreen_ui.json")
                             || filename.equals("oot3d_pica_default.o3ps")
-                            || filename.equals("oot3d_pica_default_manifest.json");
+                            || filename.equals("oot3d_pica_default_manifest.json")
+                            || filename.equals("atlas_overrides.original.o3tu")
+                            || filename.equals("atlas_overrides.pt.o3tu");
                     if (!dest.exists() || alwaysOverwrite) {
                         try (InputStream in = getAssets().open("game/" + filename);
                              OutputStream out = new FileOutputStream(dest)) {

@@ -200,6 +200,10 @@ echo ""
 echo ">>> [5/6] Compilando pacote AOT de shaders offline (.o3ps)..."
 "$REPO_ROOT/tools/oot3d/native_pica_frontend/build_shader_pack.sh"
 
+# Garantir pacote de tradução PT-BR embutido nos assets
+echo ">>> Verificando pacote de tradução PT-BR embutido..."
+python3 "$REPO_ROOT/tools/android/package_embedded_translation.py"
+
 # 7. Compilação do APK com Gradle
 echo ""
 echo ">>> [6/6] Compilando APK via Gradle..."
