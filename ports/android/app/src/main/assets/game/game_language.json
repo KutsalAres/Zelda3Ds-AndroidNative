@@ -1,0 +1,37 @@
+{
+  "format": "triaevum_game_language_v1",
+  "available": [
+    {
+      "code": "en",
+      "label": "English",
+      "system_id": 1
+    },
+    {
+      "code": "pt",
+      "label": "Português (Brasil)",
+      "system_id": 9
+    },
+    {
+      "code": "es",
+      "label": "Español",
+      "system_id": 5
+    },
+    {
+      "code": "fr",
+      "label": "Français",
+      "system_id": 2
+    },
+    {
+      "code": "de",
+      "label": "Deutsch",
+      "system_id": 3
+    },
+    {
+      "code": "it",
+      "label": "Italiano",
+      "system_id": 4
+    }
+  ],
+  "selected": "en"
+}
+

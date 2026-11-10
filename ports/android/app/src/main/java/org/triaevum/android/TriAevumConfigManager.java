@@ -264,7 +264,7 @@ public final class TriAevumConfigManager {
         List<LanguageOption> list = new ArrayList<>();
         JSONObject json = readJson("game_language.json");
         JSONArray arr = json.optJSONArray("available");
-        if (arr != null && arr.length() > 0) {
+        if (arr != null && arr.length() > 1) {
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject item = arr.optJSONObject(i);
                 if (item != null) {
@@ -281,22 +281,19 @@ public final class TriAevumConfigManager {
                 list.add(new LanguageOption(LANGUAGE_CODES[i], LANGUAGE_LABELS[i]));
             }
         } else {
-            boolean hasPt = false;
-            for (LanguageOption opt : list) {
-                if ("pt".equalsIgnoreCase(opt.code)) {
-                    hasPt = true;
-                    break;
-                }
-            }
-            if (!hasPt) {
-                int insertIdx = 0;
-                for (int i = 0; i < list.size(); i++) {
-                    if ("en".equalsIgnoreCase(list.get(i).code)) {
-                        insertIdx = i + 1;
+            // Ensure all known languages exist in list
+            for (int i = 0; i < LANGUAGE_CODES.length; i++) {
+                String code = LANGUAGE_CODES[i];
+                boolean found = false;
+                for (LanguageOption opt : list) {
+                    if (code.equalsIgnoreCase(opt.code)) {
+                        found = true;
                         break;
                     }
                 }
-                list.add(insertIdx, new LanguageOption("pt", "Português (Brasil)"));
+                if (!found) {
+                    list.add(new LanguageOption(code, LANGUAGE_LABELS[i]));
+                }
             }
         }
         return list;
@@ -424,26 +421,35 @@ public final class TriAevumConfigManager {
     public void setLanguageCode(String code) {
         JSONObject obj = readJson("game_language.json");
         try {
+            obj.put("format", "triaevum_game_language_v1");
             obj.put("selected", code);
             JSONArray arr = obj.optJSONArray("available");
-            if (arr == null) {
+            if (arr == null || arr.length() <= 1) {
                 arr = new JSONArray();
-                obj.put("available", arr);
-            }
-            boolean found = false;
-            for (int i = 0; i < arr.length(); i++) {
-                JSONObject item = arr.optJSONObject(i);
-                if (item != null && code.equalsIgnoreCase(item.optString("code"))) {
-                    found = true;
-                    break;
+                for (int i = 0; i < LANGUAGE_CODES.length; i++) {
+                    JSONObject entry = new JSONObject();
+                    entry.put("code", LANGUAGE_CODES[i]);
+                    entry.put("label", LANGUAGE_LABELS[i]);
+                    entry.put("system_id", getLanguageSystemId(LANGUAGE_CODES[i]));
+                    arr.put(entry);
                 }
-            }
-            if (!found) {
-                JSONObject entry = new JSONObject();
-                entry.put("code", code);
-                entry.put("label", getLanguageLabel(code));
-                entry.put("system_id", getLanguageSystemId(code));
-                arr.put(entry);
+                obj.put("available", arr);
+            } else {
+                boolean found = false;
+                for (int i = 0; i < arr.length(); i++) {
+                    JSONObject item = arr.optJSONObject(i);
+                    if (item != null && code.equalsIgnoreCase(item.optString("code"))) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    JSONObject entry = new JSONObject();
+                    entry.put("code", code);
+                    entry.put("label", getLanguageLabel(code));
+                    entry.put("system_id", getLanguageSystemId(code));
+                    arr.put(entry);
+                }
             }
         } catch (JSONException ignored) {}
         writeJson("game_language.json", obj);
