@@ -110,6 +110,8 @@ public final class TriAevumConfigDialog extends Dialog {
     private CheckBox mCbShowOverlay;
     private SeekBar  mSbOpacity;
     private TextView mTvOpacityLabel;
+    private SeekBar  mSbStroke;
+    private TextView mTvStrokeLabel;
     private CheckBox mCbHaptic;
     private CheckBox mCbSwapScreens;
     private CheckBox mCbTouchScreen;
@@ -262,6 +264,8 @@ public final class TriAevumConfigDialog extends Dialog {
         mCbShowOverlay       = findViewById(R.id.cb_show_overlay);
         mSbOpacity           = findViewById(R.id.sb_overlay_opacity);
         mTvOpacityLabel      = findViewById(R.id.tv_opacity_label);
+        mSbStroke            = findViewById(R.id.sb_stroke_thickness);
+        mTvStrokeLabel       = findViewById(R.id.tv_stroke_label);
         mCbHaptic            = findViewById(R.id.cb_haptic);
         mCbSwapScreens       = findViewById(R.id.cb_swap_screens);
         mCbTouchScreen       = findViewById(R.id.cb_touch_screen);
@@ -509,6 +513,11 @@ public final class TriAevumConfigDialog extends Dialog {
         mSbOpacity.setProgress(overlayOpacity);
         mTvOpacityLabel.setText("Kontrol Saydamlığı: " + overlayOpacity + "%");
 
+        int strokePct = 100;
+        if (mOverlay != null) strokePct = mOverlay.getStrokePercent();
+        mSbStroke.setProgress(strokePct - 30);
+        mTvStrokeLabel.setText("Kontrol Kalınlığı: " + strokePct + "%");
+
         // SeekBar live listeners
         mSbCamSpeed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override public void onProgressChanged(SeekBar sb, int progress, boolean fromUser) {
@@ -551,6 +560,18 @@ public final class TriAevumConfigDialog extends Dialog {
                 mTvOpacityLabel.setText("Kontrol Saydamlığı: " + pct + "%");
                 if (fromUser && mOverlay != null) {
                     mOverlay.setOverlayOpacityPercent(pct);
+                }
+            }
+            @Override public void onStartTrackingTouch(SeekBar sb) {}
+            @Override public void onStopTrackingTouch(SeekBar sb) {}
+        });
+
+        mSbStroke.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override public void onProgressChanged(SeekBar sb, int progress, boolean fromUser) {
+                int pct = 30 + progress;
+                mTvStrokeLabel.setText("Kontrol Kalınlığı: " + pct + "%");
+                if (fromUser && mOverlay != null) {
+                    mOverlay.setStrokePercent(pct);
                 }
             }
             @Override public void onStartTrackingTouch(SeekBar sb) {}
@@ -755,6 +776,7 @@ public final class TriAevumConfigDialog extends Dialog {
                 mOverlay.setHapticFeedbackEnabled(true);
                 mOverlay.setTouchEnabled(false);
                 mOverlay.setOverlayOpacityPercent(100);
+                mOverlay.setStrokePercent(100);
             }
             try {
                 AndroidNativeInputTarget.nativeSwapScreens(false);
@@ -1166,6 +1188,7 @@ Değişiklikler için oyunu yeniden başlatın.",
             mOverlay.setHapticFeedbackEnabled(haptic);
             mOverlay.setTouchEnabled(touchScreen);
             mOverlay.setOverlayOpacityPercent(mSbOpacity.getProgress());
+            mOverlay.setStrokePercent(30 + mSbStroke.getProgress());
         }
         try {
             AndroidNativeInputTarget.nativeSwapScreens(swapScr);
