@@ -61,11 +61,21 @@ add_subdirectory("ship")
 file(GLOB Source_Files__Pica CONFIGURE_DEPENDS RELATIVE
     ${CMAKE_CURRENT_SOURCE_DIR} "pica/*.cpp")
 set(AZAHAR_PICA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../tools/oot3d/third_party/azahar_pica")
-list(APPEND Source_Files__Pica "${AZAHAR_PICA_DIR}/video_core/shader/generator/glsl_shader_decompiler.cpp")
+set(PICA_TO_SPIRV_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../tools/oot3d/pica_to_spirv")
+list(APPEND Source_Files__Pica
+    "${AZAHAR_PICA_DIR}/video_core/shader/generator/glsl_shader_decompiler.cpp"
+    "${PICA_TO_SPIRV_DIR}/spirv_builder.cpp"
+    "${PICA_TO_SPIRV_DIR}/pica_vertex_translator.cpp"
+    "${PICA_TO_SPIRV_DIR}/pica_fragment_translator.cpp"
+)
 set_source_files_properties(
     "${CMAKE_CURRENT_SOURCE_DIR}/pica/pica_shader_translator.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/pica/pica_fragment_generator.cpp"
     "${AZAHAR_PICA_DIR}/video_core/shader/generator/glsl_shader_decompiler.cpp"
-    PROPERTIES INCLUDE_DIRECTORIES "${AZAHAR_PICA_DIR}"
+    "${PICA_TO_SPIRV_DIR}/spirv_builder.cpp"
+    "${PICA_TO_SPIRV_DIR}/pica_vertex_translator.cpp"
+    "${PICA_TO_SPIRV_DIR}/pica_fragment_translator.cpp"
+    PROPERTIES INCLUDE_DIRECTORIES "${AZAHAR_PICA_DIR};${PICA_TO_SPIRV_DIR}"
 )
 source_group("pica" FILES ${Source_Files__Pica})
 target_sources(three_ds_recomp_runtime PRIVATE ${Source_Files__Pica})
@@ -94,7 +104,7 @@ endif()
 
 target_include_directories(three_ds_recomp_runtime
     PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${INCLUDE_DIR} ${ADDITIONAL_LIB_INCLUDES}
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${INCLUDE_DIR} ${ADDITIONAL_LIB_INCLUDES} "${PICA_TO_SPIRV_DIR}"
 )
 
 #=================== Linking ===================

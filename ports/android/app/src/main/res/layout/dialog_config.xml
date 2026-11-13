@@ -1080,6 +1080,16 @@
                                 android:buttonTint="#FFD700" />
                         </LinearLayout>
 
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:orientation="horizontal" android:layout_marginBottom="6dp">
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                                android:layout_weight="1" android:text="Ocultar com Controle Físico"
+                                android:textColor="#C8D8E8" android:textSize="12sp" android:layout_gravity="center_vertical" />
+                            <CheckBox android:id="@+id/cb_auto_hide_gamepad"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:buttonTint="#FFD700" />
+                        </LinearLayout>
+
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:id="@+id/tv_opacity_label"
                             android:text="Opacidade dos Controles: 100%"

@@ -46,6 +46,21 @@ struct PicaFragmentShaderOutput {
 
 class PicaFragmentGenerator {
 public:
+    /// Translates PICA draw state directly into SPIR-V fragment shader binary words in memory.
+    static bool TranslateDirectSpirv(
+        const PicaDrawState& drawState,
+        const PicaFragmentShaderConfig& config,
+        std::vector<uint32_t>& outSpirv,
+        std::string* errorLog = nullptr);
+
+    /// Translates PICA fragment shader to SPIR-V with seamless fallback:
+    /// Tries fast direct in-memory translator first; falls back to GLSL + glslangValidator if needed.
+    static bool TranslateToSpirv(
+        const PicaDrawState& drawState,
+        const PicaFragmentShaderConfig& config,
+        PicaFragmentShaderOutput& outShader,
+        std::string* errorLog = nullptr);
+
     /// Generates structured Vulkan Fragment Shader GLSL (#version 450) from canonical PICA state.
     static bool GenerateGlsl(
         const PicaDrawState& drawState,

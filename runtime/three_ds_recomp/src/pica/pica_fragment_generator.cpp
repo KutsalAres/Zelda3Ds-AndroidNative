@@ -1,4 +1,5 @@
 #include "three_ds_recomp/pica/pica_fragment_generator.h"
+#include "pica_fragment_translator.h"
 
 #include <algorithm>
 #include <cmath>
@@ -110,6 +111,45 @@ std::string CompareOpString(CompareFunc func, const std::string& a, const std::s
 }
 
 } // namespace
+
+bool PicaFragmentGenerator::TranslateDirectSpirv(
+    const PicaDrawState& drawState,
+    const PicaFragmentShaderConfig& config,
+    std::vector<uint32_t>& outSpirv,
+    std::string* errorLog) {
+
+    PicaToSpirv::PicaFragmentTranslator translator(PicaToSpirv::kSpirvVersion1_0);
+    return translator.Translate(drawState, config, outSpirv, errorLog);
+}
+
+bool PicaFragmentGenerator::TranslateToSpirv(
+    const PicaDrawState& drawState,
+    const PicaFragmentShaderConfig& config,
+    PicaFragmentShaderOutput& outShader,
+    std::string* errorLog) {
+
+    outShader = {};
+    outShader.StateKey = drawState.StateHash;
+
+    // 1. Fast Path: In-memory direct translation PICA fragment state -> SPIR-V
+    std::string directError;
+    if (TranslateDirectSpirv(drawState, config, outShader.SpirvBinary, &directError)) {
+        outShader.ValidSpirv = true;
+        return true;
+    }
+
+    // 2. Fallback Path: Generate GLSL text and compile with glslangValidator
+    if (!GenerateGlsl(drawState, config, outShader, errorLog)) {
+        return false;
+    }
+
+    if (!CompileGlslToSpirv(outShader.GlslSource, outShader.SpirvBinary, errorLog)) {
+        return false;
+    }
+
+    outShader.ValidSpirv = true;
+    return true;
+}
 
 bool PicaFragmentGenerator::GenerateGlsl(
     const PicaDrawState& drawState,

@@ -108,6 +108,7 @@ public final class TriAevumConfigDialog extends Dialog {
 
     // Controles
     private CheckBox mCbShowOverlay;
+    private CheckBox mCbAutoHideGamepad;
     private SeekBar  mSbOpacity;
     private TextView mTvOpacityLabel;
     private CheckBox mCbHaptic;
@@ -260,6 +261,7 @@ public final class TriAevumConfigDialog extends Dialog {
 
         // Controles
         mCbShowOverlay       = findViewById(R.id.cb_show_overlay);
+        mCbAutoHideGamepad   = findViewById(R.id.cb_auto_hide_gamepad);
         mSbOpacity           = findViewById(R.id.sb_overlay_opacity);
         mTvOpacityLabel      = findViewById(R.id.tv_opacity_label);
         mCbHaptic            = findViewById(R.id.cb_haptic);
@@ -484,6 +486,7 @@ public final class TriAevumConfigDialog extends Dialog {
 
         // Controls — read directly from SharedPreferences (same keys as EmulationMenuSettings)
         boolean showOverlay = (mOverlay != null) ? mOverlay.isShowControls() : mPrefs.getBoolean("EmulationMenuSettings_ShowOverlay", true);
+        boolean autoHide    = (mOverlay != null) ? mOverlay.isAutoHideGamepad() : mPrefs.getBoolean("EmulationMenuSettings_AutoHideGamepad", true);
         boolean haptic      = (mOverlay != null) ? mOverlay.isHapticFeedbackEnabled() : mPrefs.getBoolean("EmulationMenuSettings_HapticFeedback", true);
         boolean swapScr     = mPrefs.getBoolean("EmulationMenuSettings_SwapScreens", false);
         boolean touchScreen = (mOverlay != null) ? mOverlay.isTouchEnabled() : mPrefs.getBoolean("EmulationMenuSettings_TouchEnabled", false);
@@ -491,12 +494,14 @@ public final class TriAevumConfigDialog extends Dialog {
         boolean dpadSlide   = mPrefs.getBoolean("EmulationMenuSettings_DpadSlideEnable", true);
         Log.d(TAG, "  [prefs=" + PREFS_NAME + "]"
             + " showOverlay=" + showOverlay
+            + " autoHide=" + autoHide
             + " haptic=" + haptic
             + " swapScreens=" + swapScr
             + " touchScreen=" + touchScreen
             + " joystickRelCenter=" + joyRel
             + " dpadSlide=" + dpadSlide);
         mCbShowOverlay.setChecked(showOverlay);
+        mCbAutoHideGamepad.setChecked(autoHide);
         mCbHaptic.setChecked(haptic);
         mCbSwapScreens.setChecked(swapScr);
         mCbTouchScreen.setChecked(touchScreen);
@@ -744,6 +749,7 @@ public final class TriAevumConfigDialog extends Dialog {
             mConfig.applyLiveSettings();
             mPrefs.edit()
                 .putBoolean("EmulationMenuSettings_ShowOverlay", true)
+                .putBoolean("EmulationMenuSettings_AutoHideGamepad", true)
                 .putBoolean("EmulationMenuSettings_HapticFeedback", true)
                 .putBoolean("EmulationMenuSettings_SwapScreens", false)
                 .putBoolean("EmulationMenuSettings_TouchEnabled", false)
@@ -752,6 +758,7 @@ public final class TriAevumConfigDialog extends Dialog {
                 .apply();
             if (mOverlay != null) {
                 mOverlay.setShowControls(true);
+                mOverlay.setAutoHideGamepad(true);
                 mOverlay.setHapticFeedbackEnabled(true);
                 mOverlay.setTouchEnabled(false);
                 mOverlay.setOverlayOpacityPercent(100);
@@ -1134,6 +1141,7 @@ public final class TriAevumConfigDialog extends Dialog {
 
         // Controles — write directly to SharedPreferences (same keys as EmulationMenuSettings)
         boolean showOverlay = mCbShowOverlay.isChecked();
+        boolean autoHide = mCbAutoHideGamepad.isChecked();
         boolean haptic = mCbHaptic.isChecked();
         boolean swapScr = mCbSwapScreens.isChecked();
         boolean touchScreen = mCbTouchScreen.isChecked();
@@ -1141,6 +1149,7 @@ public final class TriAevumConfigDialog extends Dialog {
         boolean dpadSlide = mCbDpadSlide.isChecked();
 
         Log.d(TAG, "  saving controls: showOverlay=" + showOverlay
+            + " autoHide=" + autoHide
             + " haptic=" + haptic
             + " swapScreens=" + swapScr
             + " touchScreen=" + touchScreen
@@ -1148,6 +1157,7 @@ public final class TriAevumConfigDialog extends Dialog {
             + " dpadSlide=" + dpadSlide);
         mPrefs.edit()
             .putBoolean("EmulationMenuSettings_ShowOverlay", showOverlay)
+            .putBoolean("EmulationMenuSettings_AutoHideGamepad", autoHide)
             .putBoolean("EmulationMenuSettings_HapticFeedback", haptic)
             .putBoolean("EmulationMenuSettings_SwapScreens", swapScr)
             .putBoolean("EmulationMenuSettings_TouchEnabled", touchScreen)
@@ -1157,6 +1167,7 @@ public final class TriAevumConfigDialog extends Dialog {
 
         if (mOverlay != null) {
             mOverlay.setShowControls(showOverlay);
+            mOverlay.setAutoHideGamepad(autoHide);
             mOverlay.setHapticFeedbackEnabled(haptic);
             mOverlay.setTouchEnabled(touchScreen);
             mOverlay.setOverlayOpacityPercent(mSbOpacity.getProgress());

@@ -16,6 +16,26 @@ public:
     /// Decodes a 32-bit PICA swizzle descriptor into individual operand selectors and dest mask.
     static DecodedSwizzle DecodeSwizzle(uint32_t swizzleWord);
 
+    /// Translates a PICA vertex shader bytecode program directly into SPIR-V binary words in memory.
+    /// Fast in-memory path (PicaToSpirv), bypassing GLSL decompilation, text formatting, and disk/glslangValidator.
+    static bool TranslateDirectSpirv(
+        std::span<const uint32_t> programCode,
+        std::span<const uint32_t> swizzleData,
+        uint32_t mainOffset,
+        const PicaShaderConfig& config,
+        std::vector<uint32_t>& outSpirv,
+        std::string* errorLog = nullptr);
+
+    /// Translates PICA vertex shader to SPIR-V with seamless fallback:
+    /// Tries fast direct in-memory translator first; falls back to GLSL + glslangValidator if needed.
+    static bool TranslateToSpirv(
+        std::span<const uint32_t> programCode,
+        std::span<const uint32_t> swizzleData,
+        uint32_t mainOffset,
+        const PicaShaderConfig& config,
+        PicaShaderOutput& outShader,
+        std::string* errorLog = nullptr);
+
     /// Translates a PICA vertex shader bytecode program into structured Vulkan GLSL (#version 450).
     static bool TranslateGlsl(
         std::span<const uint32_t> programCode,

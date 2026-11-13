@@ -2,11 +2,10 @@
   "descriptor_schema_version": 3,
   "format": "oot3d_pica_aot_shader_pack_manifest_v1",
   "inventories": [
-    "/media/windroid/SSD KING/RECOMP-ZELDA-3DS-ANDROID/tools/oot3d/native_pica_frontend/profiles/oot3d_pica_boot_title_kokiri_pipeline.json",
-    "/media/windroid/SSD KING/RECOMP-ZELDA-3DS-ANDROID/tools/oot3d/native_pica_frontend/profiles/oot3d_pica_boot_title_kokiri_effective.json"
+    "/media/anthero/13ACC57855F53B9A/RECOMP-ZELDA-3DS-ANDROID/build/pica_aot_inventory.json"
   ],
   "merged_inventory": null,
-  "pack": "/media/windroid/SSD KING/RECOMP-ZELDA-3DS-ANDROID/ports/android/app/src/main/assets/game/oot3d_pica_default.o3ps",
+  "pack": "/media/anthero/13ACC57855F53B9A/RECOMP-ZELDA-3DS-ANDROID/ports/android/app/src/main/assets/game/oot3d_pica_default.o3ps",
   "pack_format_version": 1,
   "renderer_sources_added": 2,
   "shader_count": 200,

@@ -42,20 +42,26 @@ add_executable(pica_shader_translator_tests
     pica_shader_translator_tests.cpp
     ../src/pica/pica_shader_translator.cpp
     ../src/pica/pica_shader_corpus.cpp
-    ../../tools/oot3d/third_party/azahar_pica/video_core/shader/generator/glsl_shader_decompiler.cpp)
+    ../../tools/oot3d/third_party/azahar_pica/video_core/shader/generator/glsl_shader_decompiler.cpp
+    ../../tools/oot3d/pica_to_spirv/spirv_builder.cpp
+    ../../tools/oot3d/pica_to_spirv/pica_vertex_translator.cpp)
 target_compile_features(pica_shader_translator_tests PRIVATE cxx_std_20)
 target_include_directories(pica_shader_translator_tests PRIVATE
     ../include
-    ../../tools/oot3d/third_party/azahar_pica)
+    ../../tools/oot3d/third_party/azahar_pica
+    ../../tools/oot3d/pica_to_spirv)
 add_test(NAME pica_shader_translator_tests COMMAND pica_shader_translator_tests)
 
 add_executable(pica_fragment_shader_tests
     pica_fragment_shader_tests.cpp
-    ../src/pica/pica_fragment_generator.cpp)
+    ../src/pica/pica_fragment_generator.cpp
+    ../../tools/oot3d/pica_to_spirv/spirv_builder.cpp
+    ../../tools/oot3d/pica_to_spirv/pica_fragment_translator.cpp)
 target_compile_features(pica_fragment_shader_tests PRIVATE cxx_std_20)
 target_include_directories(pica_fragment_shader_tests PRIVATE
     ../include
-    ../../tools/oot3d/third_party/azahar_pica)
+    ../../tools/oot3d/third_party/azahar_pica
+    ../../tools/oot3d/pica_to_spirv)
 add_test(NAME pica_fragment_shader_tests COMMAND pica_fragment_shader_tests)
 
 add_executable(pica_raster_pipeline_tests

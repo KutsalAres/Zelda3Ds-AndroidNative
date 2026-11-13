@@ -198,7 +198,11 @@ python3 "$REPO_ROOT/tools/android/stage_native_app.py" \
 # 6. Compilação offline de shaders PICA (SPIR-V AOT pack)
 echo ""
 echo ">>> [5/6] Compilando pacote AOT de shaders offline (.o3ps)..."
-"$REPO_ROOT/tools/oot3d/native_pica_frontend/build_shader_pack.sh"
+if [ -n "$ROM_PATH" ]; then
+    "$REPO_ROOT/tools/oot3d/native_pica_frontend/build_shader_pack.sh" --rom "$ROM_PATH"
+else
+    "$REPO_ROOT/tools/oot3d/native_pica_frontend/build_shader_pack.sh"
+fi
 
 # Garantir pacote de tradução PT-BR embutido nos assets
 echo ">>> Verificando pacote de tradução PT-BR embutido..."

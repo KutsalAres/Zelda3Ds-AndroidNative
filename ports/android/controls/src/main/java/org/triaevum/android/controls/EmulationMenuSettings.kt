@@ -54,4 +54,11 @@ object EmulationMenuSettings {
                 .putBoolean("EmulationMenuSettings_ShowOverlay", value)
                 .apply()
         }
+    var autoHideGamepad: Boolean
+        get() = preferences.getBoolean("EmulationMenuSettings_AutoHideGamepad", true)
+        set(value) {
+            preferences.edit()
+                .putBoolean("EmulationMenuSettings_AutoHideGamepad", value)
+                .apply()
+        }
 }

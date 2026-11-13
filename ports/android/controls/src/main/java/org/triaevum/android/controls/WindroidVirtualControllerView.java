@@ -152,13 +152,18 @@ public class WindroidVirtualControllerView extends View {
     private static final String PREF_SHOW_OVERLAY = "EmulationMenuSettings_ShowOverlay";
     private static final String PREF_HAPTIC = "EmulationMenuSettings_HapticFeedback";
     private static final String PREF_TOUCH_ENABLED = "EmulationMenuSettings_TouchEnabled";
+    private static final String PREF_AUTO_HIDE_GAMEPAD = "EmulationMenuSettings_AutoHideGamepad";
     private boolean mShowControls = true;
     private boolean mGamepadConnected = false;
+    private boolean mAutoHideGamepad = true;
     private boolean mHapticFeedbackEnabled = true;
     private boolean mTouchEnabled = false;
 
     public boolean areControlsVisible() {
-        return mShowControls && !mGamepadConnected;
+        if (mAutoHideGamepad && mGamepadConnected) {
+            return false;
+        }
+        return mShowControls;
     }
 
     public boolean isGamepadConnected() {
@@ -168,8 +173,22 @@ public class WindroidVirtualControllerView extends View {
     public void setGamepadConnected(boolean connected) {
         if (mGamepadConnected != connected) {
             mGamepadConnected = connected;
-            if (connected) {
+            if (connected && mAutoHideGamepad) {
                 releaseAll();
+            }
+            postInvalidate();
+        }
+    }
+
+    public boolean isAutoHideGamepad() {
+        return mAutoHideGamepad;
+    }
+
+    public void setAutoHideGamepad(boolean autoHide) {
+        if (mAutoHideGamepad != autoHide) {
+            mAutoHideGamepad = autoHide;
+            if (preferences != null) {
+                preferences.edit().putBoolean(PREF_AUTO_HIDE_GAMEPAD, autoHide).apply();
             }
             postInvalidate();
         }
@@ -275,6 +294,7 @@ public class WindroidVirtualControllerView extends View {
             preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
             mOverlayOpacityPercent = preferences.getInt(PREF_OPACITY, 100);
             mShowControls = preferences.getBoolean(PREF_SHOW_OVERLAY, true);
+            mAutoHideGamepad = preferences.getBoolean(PREF_AUTO_HIDE_GAMEPAD, true);
             mHapticFeedbackEnabled = preferences.getBoolean(PREF_HAPTIC, true);
             mTouchEnabled = preferences.getBoolean(PREF_TOUCH_ENABLED, false);
         } catch (Exception ignored) {}

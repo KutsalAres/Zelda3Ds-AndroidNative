@@ -286,10 +286,12 @@ public final class TriAevumActivity extends Activity {
                 android.content.SharedPreferences prefs = getApplicationContext()
                     .getSharedPreferences("org.triaevum.android_preferences", Context.MODE_PRIVATE);
                 boolean showOverlay = prefs.getBoolean("EmulationMenuSettings_ShowOverlay", true);
+                boolean autoHide = prefs.getBoolean("EmulationMenuSettings_AutoHideGamepad", true);
                 boolean haptic = prefs.getBoolean("EmulationMenuSettings_HapticFeedback", true);
                 boolean swapScreens = prefs.getBoolean("EmulationMenuSettings_SwapScreens", false);
                 boolean touchEnabled = prefs.getBoolean("EmulationMenuSettings_TouchEnabled", false);
                 mWindroidOverlay.setShowControls(showOverlay);
+                mWindroidOverlay.setAutoHideGamepad(autoHide);
                 mWindroidOverlay.setHapticFeedbackEnabled(haptic);
                 mWindroidOverlay.setTouchEnabled(touchEnabled);
                 AndroidNativeInputTarget.nativeSwapScreens(swapScreens);
@@ -594,18 +596,7 @@ public final class TriAevumActivity extends Activity {
     }
 
     private boolean isPhysicalGamepadConnected() {
-        int[] deviceIds = InputDevice.getDeviceIds();
-        for (int id : deviceIds) {
-            InputDevice dev = InputDevice.getDevice(id);
-            if (dev != null && !dev.isVirtual()) {
-                int sources = dev.getSources();
-                if (((sources & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD) ||
-                    ((sources & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return GameControllerDetector.hasPhysicalGamepadConnected();
     }
 
     private void updateControllerConnectionState() {
@@ -615,12 +606,23 @@ public final class TriAevumActivity extends Activity {
                 boolean wasConnected = mWindroidOverlay.isGamepadConnected();
                 if (wasConnected != connected) {
                     mWindroidOverlay.setGamepadConnected(connected);
+                    boolean autoHide = mWindroidOverlay.isAutoHideGamepad();
                     if (connected) {
-                        Toast.makeText(this, "Controle conectado: controles na tela ocultados", Toast.LENGTH_SHORT).show();
-                        Log.i(TAG, "Controle físico detectado - controles virtuais ocultados");
+                        if (autoHide) {
+                            Toast.makeText(this, "Controle conectado: controles na tela ocultados", Toast.LENGTH_SHORT).show();
+                            Log.i(TAG, "Controle físico detectado - controles virtuais ocultados");
+                        } else {
+                            Toast.makeText(this, "Controle conectado", Toast.LENGTH_SHORT).show();
+                            Log.i(TAG, "Controle físico detectado - controles virtuais mantidos visíveis");
+                        }
                     } else {
-                        Toast.makeText(this, "Controle desconectado: controles na tela restaurados", Toast.LENGTH_SHORT).show();
-                        Log.i(TAG, "Controle físico desconectado - controles virtuais restaurados");
+                        if (autoHide) {
+                            Toast.makeText(this, "Controle desconectado: controles na tela restaurados", Toast.LENGTH_SHORT).show();
+                            Log.i(TAG, "Controle físico desconectado - controles virtuais restaurados");
+                        } else {
+                            Toast.makeText(this, "Controle desconectado", Toast.LENGTH_SHORT).show();
+                            Log.i(TAG, "Controle físico desconectado");
+                        }
                     }
                 }
             }
@@ -629,17 +631,15 @@ public final class TriAevumActivity extends Activity {
 
     @Override
     public boolean dispatchKeyEvent(android.view.KeyEvent event) {
-        int source = event.getSource();
-        if (((source & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD ||
-             (source & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK) &&
-            mWindroidOverlay != null && !mWindroidOverlay.isGamepadConnected()) {
+        InputDevice dev = event.getDevice();
+        boolean isController = GameControllerDetector.isGameController(dev);
+        if (isController && mWindroidOverlay != null && !mWindroidOverlay.isGamepadConnected()) {
             updateControllerConnectionState();
         }
         if (mInputTarget != null) {
             int keyCode = event.getKeyCode();
             if (keyCode == android.view.KeyEvent.KEYCODE_BACK) {
-                if ((source & android.view.InputDevice.SOURCE_GAMEPAD) != android.view.InputDevice.SOURCE_GAMEPAD &&
-                    (source & android.view.InputDevice.SOURCE_JOYSTICK) != android.view.InputDevice.SOURCE_JOYSTICK) {
+                if (!isController) {
                     return super.dispatchKeyEvent(event);
                 }
             }
@@ -659,8 +659,8 @@ public final class TriAevumActivity extends Activity {
 
     @Override
     public boolean onGenericMotionEvent(android.view.MotionEvent event) {
-        if (mInputTarget != null && ((event.getSource() & android.view.InputDevice.SOURCE_JOYSTICK) == android.view.InputDevice.SOURCE_JOYSTICK ||
-                                     (event.getSource() & android.view.InputDevice.SOURCE_GAMEPAD) == android.view.InputDevice.SOURCE_GAMEPAD)) {
+        InputDevice dev = event.getDevice();
+        if (mInputTarget != null && GameControllerDetector.isGameController(dev)) {
             if (mWindroidOverlay != null && !mWindroidOverlay.isGamepadConnected()) {
                 updateControllerConnectionState();
             }

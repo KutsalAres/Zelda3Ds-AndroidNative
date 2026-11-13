@@ -2,6 +2,7 @@
 
 #include "nihstro/shader_bytecode.h"
 #include "video_core/shader/generator/glsl_shader_decompiler.h"
+#include "pica_vertex_translator.h"
 
 #include <algorithm>
 #include <array>
@@ -181,6 +182,58 @@ DecodedSwizzle PicaShaderTranslator::DecodeSwizzle(uint32_t swizzleWord) {
     res.Src3.Negate = pattern.negate_src3.Value();
 
     return res;
+}
+
+bool PicaShaderTranslator::TranslateDirectSpirv(
+    std::span<const uint32_t> programCode,
+    std::span<const uint32_t> swizzleData,
+    uint32_t mainOffset,
+    const PicaShaderConfig& config,
+    std::vector<uint32_t>& outSpirv,
+    std::string* errorLog) {
+
+    PicaToSpirv::PicaVertexShaderConfig translatorConfig{};
+    translatorConfig.descriptorSet = 0;
+    translatorConfig.uniformBinding = 0;
+    translatorConfig.flipViewport = config.FlipViewport;
+    translatorConfig.emulateDepth = config.EmulateDepthInVertexShader;
+    translatorConfig.sanitizeMul = config.SanitizeMul;
+    translatorConfig.mainOffset = mainOffset;
+    translatorConfig.spirvVersion = PicaToSpirv::kSpirvVersion1_0;
+
+    PicaToSpirv::PicaVertexTranslator translator(translatorConfig);
+    return translator.Translate(programCode, swizzleData, outSpirv, errorLog);
+}
+
+bool PicaShaderTranslator::TranslateToSpirv(
+    std::span<const uint32_t> programCode,
+    std::span<const uint32_t> swizzleData,
+    uint32_t mainOffset,
+    const PicaShaderConfig& config,
+    PicaShaderOutput& outShader,
+    std::string* errorLog) {
+
+    outShader = {};
+    outShader.StateKey = ComputeShaderHash(programCode, swizzleData, mainOffset);
+
+    // 1. Fast Path: In-memory direct translation PICA200 -> SPIR-V
+    std::string directError;
+    if (TranslateDirectSpirv(programCode, swizzleData, mainOffset, config, outShader.SpirvBinary, &directError)) {
+        outShader.ValidSpirv = true;
+        return true;
+    }
+
+    // 2. Fallback Path: Decompile to GLSL text and invoke glslangValidator
+    if (!TranslateGlsl(programCode, swizzleData, mainOffset, config, outShader, errorLog)) {
+        return false;
+    }
+
+    if (!CompileGlslToSpirv(outShader.GlslSource, outShader.SpirvBinary, errorLog)) {
+        return false;
+    }
+
+    outShader.ValidSpirv = true;
+    return true;
 }
 
 bool PicaShaderTranslator::TranslateGlsl(
