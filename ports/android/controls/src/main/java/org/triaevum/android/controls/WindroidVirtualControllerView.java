@@ -125,6 +125,23 @@ public class WindroidVirtualControllerView extends View {
     private static final String PREF_OPACITY = "VC_OVERLAY_OPACITY";
     private int mOverlayOpacityPercent = 100;
 
+    // ------- Stroke thickness -------
+    /** 30-200 percent; stored in SharedPreferences. */
+    private static final String PREF_STROKE = "VC_STROKE_PERCENT";
+    private int mStrokePercent = 100;
+
+    public int getStrokePercent() {
+        return mStrokePercent;
+    }
+
+    public void setStrokePercent(int percent) {
+        mStrokePercent = Math.max(30, Math.min(200, percent));
+        if (preferences != null) {
+            preferences.edit().putInt(PREF_STROKE, mStrokePercent).apply();
+        }
+        invalidate();
+    }
+
     public WindroidVirtualControllerView(Context context) {
         super(context);
         init();
@@ -152,18 +169,13 @@ public class WindroidVirtualControllerView extends View {
     private static final String PREF_SHOW_OVERLAY = "EmulationMenuSettings_ShowOverlay";
     private static final String PREF_HAPTIC = "EmulationMenuSettings_HapticFeedback";
     private static final String PREF_TOUCH_ENABLED = "EmulationMenuSettings_TouchEnabled";
-    private static final String PREF_AUTO_HIDE_GAMEPAD = "EmulationMenuSettings_AutoHideGamepad";
     private boolean mShowControls = true;
     private boolean mGamepadConnected = false;
-    private boolean mAutoHideGamepad = true;
     private boolean mHapticFeedbackEnabled = true;
     private boolean mTouchEnabled = false;
 
     public boolean areControlsVisible() {
-        if (mAutoHideGamepad && mGamepadConnected) {
-            return false;
-        }
-        return mShowControls;
+        return mShowControls && !mGamepadConnected;
     }
 
     public boolean isGamepadConnected() {
@@ -173,22 +185,8 @@ public class WindroidVirtualControllerView extends View {
     public void setGamepadConnected(boolean connected) {
         if (mGamepadConnected != connected) {
             mGamepadConnected = connected;
-            if (connected && mAutoHideGamepad) {
+            if (connected) {
                 releaseAll();
-            }
-            postInvalidate();
-        }
-    }
-
-    public boolean isAutoHideGamepad() {
-        return mAutoHideGamepad;
-    }
-
-    public void setAutoHideGamepad(boolean autoHide) {
-        if (mAutoHideGamepad != autoHide) {
-            mAutoHideGamepad = autoHide;
-            if (preferences != null) {
-                preferences.edit().putBoolean(PREF_AUTO_HIDE_GAMEPAD, autoHide).apply();
             }
             postInvalidate();
         }
@@ -293,8 +291,8 @@ public class WindroidVirtualControllerView extends View {
         try {
             preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
             mOverlayOpacityPercent = preferences.getInt(PREF_OPACITY, 100);
+            mStrokePercent = preferences.getInt(PREF_STROKE, 100);
             mShowControls = preferences.getBoolean(PREF_SHOW_OVERLAY, true);
-            mAutoHideGamepad = preferences.getBoolean(PREF_AUTO_HIDE_GAMEPAD, true);
             mHapticFeedbackEnabled = preferences.getBoolean(PREF_HAPTIC, true);
             mTouchEnabled = preferences.getBoolean(PREF_TOUCH_ENABLED, false);
         } catch (Exception ignored) {}
@@ -455,7 +453,7 @@ public class WindroidVirtualControllerView extends View {
         float alphaFactor = mOverlayOpacityPercent / 100.0f;
         int baseAlpha = Math.max(10, Math.min(255, (int) (220 * alphaFactor)));
         int fillAlpha = Math.max(8, Math.min(255, (int) (130 * alphaFactor)));
-        paint.setStrokeWidth(16F * scaleFactor);
+        paint.setStrokeWidth(16F * scaleFactor * mStrokePercent / 100F);
 
         // ---- Settings gear button (always drawn, scales uniformly with min floor) ----
         drawSettingsButton(canvas, alphaFactor);
@@ -467,7 +465,7 @@ public class WindroidVirtualControllerView extends View {
         // 1. Draw buttons (ABXY, Triggers, Start, Select)
         for (VirtualControllerButton i : buttonList) {
             paint.setColor(Color.WHITE);
-            paint.setStrokeWidth(16F * scaleFactor);
+            paint.setStrokeWidth(16F * scaleFactor * mStrokePercent / 100F);
 
             if (i.isPressed) {
                 paint.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -501,7 +499,7 @@ public class WindroidVirtualControllerView extends View {
 
             switch (i.id) {
                 case START_BUTTON: {
-                    paint.setStrokeWidth(12F * scaleFactor);
+                    paint.setStrokeWidth(12F * scaleFactor * mStrokePercent / 100F);
                     startButton.reset();
                     float w3 = i.radius / 3.0F;
                     float h8 = i.radius / 8.0F;
@@ -523,7 +521,7 @@ public class WindroidVirtualControllerView extends View {
                     break;
                 }
                 case SELECT_BUTTON: {
-                    paint.setStrokeWidth(12F * scaleFactor);
+                    paint.setStrokeWidth(12F * scaleFactor * mStrokePercent / 100F);
                     selectButton.reset();
                     float s4 = i.radius / 4F;
                     selectButton.moveTo(i.x - s4 + 4F, i.y - s4 + 40F * scaleFactor);
@@ -571,7 +569,7 @@ public class WindroidVirtualControllerView extends View {
 
         paint.setColor(Color.WHITE);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(16F * scaleFactor);
+        paint.setStrokeWidth(16F * scaleFactor * mStrokePercent / 100F);
         paint.setAlpha(baseAlpha);
         canvas.drawCircle(leftAnalog.x, leftAnalog.y, leftOuterRadius, paint);
 
@@ -595,7 +593,7 @@ public class WindroidVirtualControllerView extends View {
 
         paint.setColor(Color.WHITE);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(14F * scaleFactor);
+        paint.setStrokeWidth(14F * scaleFactor * mStrokePercent / 100F);
         paint.setAlpha(baseAlpha);
         canvas.drawCircle(rightAnalog.x, rightAnalog.y, rightOuterRadius, paint);
 
@@ -650,7 +648,7 @@ public class WindroidVirtualControllerView extends View {
         dpadDown.lineTo(dpad.x, dpad.y + dOffset);
         dpadDown.close();
 
-        paint.setStrokeWidth(16F * scaleFactor);
+        paint.setStrokeWidth(16F * scaleFactor * mStrokePercent / 100F);
         drawDPad(dpadUp, dpad.dpadStatus == UP || dpad.dpadStatus == RIGHT_UP || dpad.dpadStatus == LEFT_UP, canvas, baseAlpha);
         drawDPad(dpadDown, dpad.dpadStatus == DOWN || dpad.dpadStatus == RIGHT_DOWN || dpad.dpadStatus == LEFT_DOWN, canvas, baseAlpha);
         drawDPad(dpadLeft, dpad.dpadStatus == LEFT || dpad.dpadStatus == LEFT_DOWN || dpad.dpadStatus == LEFT_UP, canvas, baseAlpha);
