@@ -1132,8 +1132,7 @@ public final class TriAevumActivity extends Activity {
                 config.setCustomTexturesPath(resolvedPath);
                 config.setCustomTexturesEnabled(true);
                 TriAevumConfigManager.nativeReloadGraphicsSettings();
-                android.widget.Toast.makeText(this, "✅ Doku klasörü seçildi:
-" + resolvedPath, android.widget.Toast.LENGTH_LONG).show();
+                android.widget.Toast.makeText(this, "✅ Doku klasörü seçildi:\n" + resolvedPath, android.widget.Toast.LENGTH_LONG).show();
                 if (mTextureDirSelectedListener != null) {
                     mTextureDirSelectedListener.onTextureDirSelected(resolvedPath);
                 }
@@ -1164,8 +1163,7 @@ public final class TriAevumActivity extends Activity {
 
                     runOnUiThread(() -> {
                         android.widget.Toast.makeText(TriAevumActivity.this,
-                                "✅ Sürücü kuruldu: " + installed.name + "
-Uygulamak için oyunu yeniden başlatın.",
+                                "✅ Sürücü kuruldu: " + installed.name + "\nUygulamak için oyunu yeniden başlatın.",
                                 android.widget.Toast.LENGTH_LONG).show();
                         if (mDriverInstallListener != null) {
                             mDriverInstallListener.onDriverInstalled(installed);
