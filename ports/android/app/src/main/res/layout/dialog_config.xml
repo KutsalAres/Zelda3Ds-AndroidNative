@@ -26,7 +26,7 @@
                 android:id="@+id/tv_config_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="⚙ Configurações"
+                android:text="⚙ Ayarlar"
                 android:textColor="#FFC107"
                 android:textSize="17sp"
                 android:textStyle="bold" />
@@ -56,7 +56,7 @@
                 android:background="@drawable/btn_danger"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:text="Restaurar Padrões"
+                android:text="Varsayılanlara Dön"
                 android:textColor="#FFFFFF"
                 android:textSize="11sp" />
 
@@ -68,7 +68,7 @@
                 android:background="@drawable/btn_gold"
                 android:paddingLeft="14dp"
                 android:paddingRight="14dp"
-                android:text="Salvar"
+                android:text="Kaydet"
                 android:textColor="#1A1500"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -80,7 +80,7 @@
                 android:background="@drawable/btn_dark"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
-                android:text="Fechar"
+                android:text="Kapat"
                 android:textColor="#FFFFFF"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -117,7 +117,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="42dp"
                     android:layout_marginBottom="3dp"
-                    android:text="🌐  Geral"
+                    android:text="🌐  Genel"
                     android:textColor="#FFD700"
                     android:background="@drawable/tab_selected_bg"
                     android:textSize="12sp"
@@ -130,7 +130,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="42dp"
                     android:layout_marginBottom="3dp"
-                    android:text="🎨  Gráficos"
+                    android:text="🎨  Grafikler"
                     android:textColor="#8B9BB4"
                     android:background="@drawable/btn_dark"
                     android:textSize="12sp"
@@ -142,7 +142,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="42dp"
                     android:layout_marginBottom="3dp"
-                    android:text="📷  Câmera / HUD"
+                    android:text="📷  Kamera / HUD"
                     android:textColor="#8B9BB4"
                     android:background="@drawable/btn_dark"
                     android:textSize="12sp"
@@ -154,7 +154,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="42dp"
                     android:layout_marginBottom="3dp"
-                    android:text="🎮  Controles"
+                    android:text="🎮  Kontroller"
                     android:textColor="#8B9BB4"
                     android:background="@drawable/btn_dark"
                     android:textSize="12sp"
@@ -166,7 +166,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="42dp"
                     android:layout_marginBottom="3dp"
-                    android:text="⚔️  Gameplay"
+                    android:text="⚔️  Oynanış"
                     android:textColor="#8B9BB4"
                     android:background="@drawable/btn_dark"
                     android:textSize="12sp"
@@ -208,7 +208,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="IDIOMA DO JOGO"
+                            android:text="OYUN DİLİ"
                             android:textColor="#FFC107"
                             android:textSize="11sp"
                             android:textStyle="bold"
@@ -235,7 +235,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="LIMITE DE RESOLUÇÃO DE SUPERFÍCIE"
+                            android:text="YÜZEY ÇÖZÜNÜRLÜK SINIRI"
                             android:textColor="#FFC107"
                             android:textSize="11sp"
                             android:textStyle="bold"
@@ -244,7 +244,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Define o limite da superfície de renderização Vulkan. 720p = padrão; 1080p = nativo Moto G100."
+                            android:text="Vulkan görüntü yüzeyinin sınırını belirler. 720p = varsayılan; 1080p = Moto G100 çözünürlüğü."
                             android:textColor="#8B9BB4"
                             android:textSize="10sp"
                             android:layout_marginBottom="8dp" />
@@ -270,7 +270,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="GERENCIAMENTO DE SAVE"
+                            android:text="KAYIT YÖNETİMİ"
                             android:textColor="#FFC107"
                             android:textSize="11sp"
                             android:textStyle="bold"
@@ -279,7 +279,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Exporte seus arquivos de progresso (.zip) ou importe um save externo para continuar jogando."
+                            android:text="İlerleme dosyalarınızı (.zip) dışa aktarın veya harici bir kaydı içe aktarıp oynamaya devam edin."
                             android:textColor="#8B9BB4"
                             android:textSize="10sp"
                             android:layout_marginBottom="8dp" />
@@ -308,7 +308,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Verificando arquivos de save..."
+                                android:text="Kayıt dosyaları kontrol ediliyor..."
                                 android:textColor="#C8D8E8"
                                 android:textSize="11sp" />
                         </LinearLayout>
@@ -335,7 +335,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Auto Save Automático"
+                                    android:text="Otomatik Kayıt"
                                     android:textColor="#C8D8E8"
                                     android:textSize="12sp"
                                     android:textStyle="bold" />
@@ -343,7 +343,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Salva sozinho ao coletar chaves, itens, rúpias e equipamentos."
+                                    android:text="Anahtar, eşya, rupi ve ekipman alınca kendiliğinden kaydeder."
                                     android:textColor="#8B9BB4"
                                     android:textSize="10sp" />
                             </LinearLayout>
@@ -368,7 +368,7 @@
                                 android:layout_weight="1"
                                 android:layout_marginRight="6dp"
                                 android:background="@drawable/btn_gold"
-                                android:text="📤 Exportar Save"
+                                android:text="📤 Kaydı Dışa Aktar"
                                 android:textColor="#1A1500"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
@@ -379,7 +379,7 @@
                                 android:layout_height="38dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/btn_dark"
-                                android:text="📥 Importar Save"
+                                android:text="📥 Kaydı İçe Aktar"
                                 android:textColor="#FFFFFF"
                                 android:textSize="11sp" />
                         </LinearLayout>
@@ -413,7 +413,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="RENDERIZAÇÃO"
+                            android:text="GÖRÜNTÜ İŞLEME"
                             android:textColor="#FFC107"
                             android:textSize="11sp"
                             android:textStyle="bold"
@@ -422,7 +422,7 @@
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:orientation="horizontal" android:layout_marginBottom="10dp">
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                                android:layout_weight="1" android:text="Escala de Renderização"
+                                android:layout_weight="1" android:text="Görüntü Ölçeği"
                                 android:textColor="#C8D8E8" android:textSize="12sp" android:layout_gravity="center_vertical" />
                             <Spinner android:id="@+id/sp_render_scale"
                                 android:layout_width="140dp" android:layout_height="36dp"
@@ -442,7 +442,7 @@
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:orientation="horizontal">
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                                android:layout_weight="1" android:text="Taxa de Quadros"
+                                android:layout_weight="1" android:text="Kare Hızı"
                                 android:textColor="#C8D8E8" android:textSize="12sp" android:layout_gravity="center_vertical" />
                             <Spinner android:id="@+id/sp_framerate"
                                 android:layout_width="140dp" android:layout_height="36dp"
@@ -462,7 +462,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="SINCRONIZAÇÃO E TEXTURAS"
+                            android:text="SENKRONİZASYON VE DOKULAR"
                             android:textColor="#FFC107"
                             android:textSize="11sp"
                             android:textStyle="bold"
@@ -481,7 +481,7 @@
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:orientation="horizontal" android:layout_marginBottom="10dp">
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                                android:layout_weight="1" android:text="Exibir FPS do Jogo"
+                                android:layout_weight="1" android:text="Oyun FPS'ini Göster"
                                 android:textColor="#C8D8E8" android:textSize="12sp" android:layout_gravity="center_vertical" />
                             <CheckBox android:id="@+id/cb_show_fps"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -491,7 +491,7 @@
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:orientation="horizontal">
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                                android:layout_weight="1" android:text="Texturas Customizadas"
+                                android:layout_weight="1" android:text="Özel Dokular"
                                 android:textColor="#C8D8E8" android:textSize="12sp" android:layout_gravity="center_vertical" />
                             <CheckBox android:id="@+id/cb_custom_textures"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -512,7 +512,7 @@
                                 android:id="@+id/tv_custom_textures_path"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Diretório: Padrão do aplicativo"
+                                android:text="Klasör: Uygulama varsayılanı"
                                 android:textColor="#90A4AE"
                                 android:textSize="10sp"
                                 android:ellipsize="middle"
@@ -524,7 +524,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
                                 android:layout_marginBottom="6dp"
-                                android:text="Verificando texturas..."
+                                android:text="Dokular kontrol ediliyor..."
                                 android:textColor="#80D8FF"
                                 android:textSize="11sp" />
 
@@ -540,7 +540,7 @@
                                     android:layout_weight="1"
                                     android:layout_marginRight="6dp"
                                     android:background="@drawable/btn_gold"
-                                    android:text="📁 Escolher Pasta"
+                                    android:text="📁 Klasör Seç"
                                     android:textColor="#1A1500"
                                     android:textSize="11sp"
                                     android:textStyle="bold" />
@@ -552,7 +552,7 @@
                                     android:background="@drawable/btn_dark"
                                     android:paddingLeft="10dp"
                                     android:paddingRight="10dp"
-                                    android:text="↺ Padrão"
+                                    android:text="↺ Varsayılan"
                                     android:textColor="#C8D8E8"
                                     android:textSize="11sp" />
                             </LinearLayout>
@@ -567,7 +567,7 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:text="⚡ Pré-carregar antes da gameplay"
+                                    android:text="⚡ Oyundan önce önceden yükle"
                                     android:textColor="#C8D8E8"
                                     android:textSize="11sp"
                                     android:layout_gravity="center_vertical" />
@@ -584,7 +584,7 @@
                                 android:layout_height="36dp"
                                 android:layout_marginTop="6dp"
                                 android:background="@drawable/btn_dark"
-                                android:text="⚡ Pré-carregar Texturas Agora"
+                                android:text="⚡ Dokuları Şimdi Önceden Yükle"
                                 android:textColor="#FFD700"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
@@ -603,7 +603,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="DRIVER DE GPU (VULKAN / TURNIP)"
+                            android:text="GPU SÜRÜCÜSÜ (VULKAN / TURNIP)"
                             android:textColor="#FFC107"
                             android:textSize="11sp"
                             android:textStyle="bold"
@@ -612,7 +612,7 @@
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:orientation="horizontal" android:layout_marginBottom="10dp">
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                                android:layout_weight="1" android:text="Driver Ativo"
+                                android:layout_weight="1" android:text="Etkin Sürücü"
                                 android:textColor="#C8D8E8" android:textSize="12sp" android:layout_gravity="center_vertical" />
                             <Spinner android:id="@+id/sp_gpu_driver"
                                 android:layout_width="160dp" android:layout_height="36dp"
@@ -625,7 +625,7 @@
                                 android:layout_width="0dp" android:layout_height="36dp"
                                 android:layout_weight="1"
                                 android:layout_marginRight="4dp"
-                                android:text="➕ Instalar Driver (.zip)"
+                                android:text="➕ Sürücü Kur (.zip)"
                                 android:textColor="#FFD700"
                                 android:textSize="11sp"
                                 android:background="@drawable/btn_dark" />
@@ -634,7 +634,7 @@
                                 android:layout_width="0dp" android:layout_height="36dp"
                                 android:layout_weight="1"
                                 android:layout_marginLeft="4dp"
-                                android:text="🗑️ Excluir Driver"
+                                android:text="🗑️ Sürücüyü Sil"
                                 android:textColor="#FF6B6B"
                                 android:textSize="11sp"
                                 android:background="@drawable/btn_dark" />
@@ -647,7 +647,7 @@
                             android:layout_marginTop="8dp"
                             android:textColor="#8B9BB4"
                             android:textSize="10sp"
-                            android:text="📱 Driver do Sistema: Qualcomm Adreno Stock padrão." />
+                            android:text="📱 Sistem Sürücüsü: cihazın varsayılan GPU sürücüsü." />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -655,7 +655,7 @@
                             android:layout_marginTop="4dp"
                             android:textColor="#FFA726"
                             android:textSize="10sp"
-                            android:text="⚠️ A troca do driver de GPU entra em vigor ao reiniciar o jogo." />
+                            android:text="⚠️ GPU sürücüsü değişikliği oyun yeniden başlatılınca geçerli olur." />
                     </LinearLayout>
 
                     <!-- Mods Visuais (PC Enhancements) -->
@@ -670,7 +670,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="✨ MODS VISUAIS (PC ENHANCEMENTS)"
+                            android:text="✨ GÖRSEL MODLAR (PC İYİLEŞTİRMELERİ)"
                             android:textColor="#FFC107"
                             android:textSize="11sp"
                             android:textStyle="bold"
@@ -691,13 +691,13 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Sombras Dinâmicas (Iluminação Solar)"
+                                    android:text="Dinamik Gölgeler (Güneş Işığı)"
                                     android:textColor="#C8D8E8"
                                     android:textSize="12sp" />
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Projeção realista de sombras do Link e do cenário com o sol"
+                                    android:text="Link'in ve ortamın güneşe göre gerçekçi gölgeleri"
                                     android:textColor="#8B9BB4"
                                     android:textSize="10sp" />
                             </LinearLayout>
@@ -723,13 +723,13 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Cel-Shading (Estilo Anime / Toon)"
+                                    android:text="Cel-Shading (Anime / Çizgi Film Stili)"
                                     android:textColor="#C8D8E8"
                                     android:textSize="12sp" />
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Iluminação estilizada em faixas tipo desenho animado"
+                                    android:text="Çizgi film tarzı bantlı ışıklandırma"
                                     android:textColor="#8B9BB4"
                                     android:textSize="10sp" />
                             </LinearLayout>
@@ -756,13 +756,13 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Contorno de Silhueta (Cel Outline)"
+                                    android:text="Siluet Çerçevesi (Cel Outline)"
                                     android:textColor="#C8D8E8"
                                     android:textSize="12sp" />
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Linhas pretas ao redor dos personagens e cenário"
+                                    android:text="Karakterlerin ve ortamın etrafında siyah çizgiler"
                                     android:textColor="#8B9BB4"
                                     android:textSize="10sp" />
                             </LinearLayout>
@@ -788,13 +788,13 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Grama 3D Interativa"
+                                    android:text="Etkileşimli 3D Çimen"
                                     android:textColor="#C8D8E8"
                                     android:textSize="12sp" />
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Lâminas 3D que balançam com vento e reagem aos passos"
+                                    android:text="Rüzgârda sallanan ve adımlara tepki veren 3D yapraklar"
                                     android:textColor="#8B9BB4"
                                     android:textSize="10sp" />
                             </LinearLayout>
@@ -815,14 +815,14 @@
                                 android:id="@+id/tv_fov_label"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Campo de Visão (FOV): 100% (Padrão)"
+                                android:text="Görüş Alanı (FOV): 100% (Varsayılan)"
                                 android:textColor="#C8D8E8"
                                 android:textSize="12sp"
                                 android:layout_marginBottom="2dp" />
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Expande o ângulo da câmera para visão panorâmica (100% a 125%)"
+                                android:text="Kamera açısını panoramik görüş için genişletir (%100 - %125)"
                                 android:textColor="#8B9BB4"
                                 android:textSize="10sp"
                                 android:layout_marginBottom="6dp" />
@@ -863,7 +863,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="CÂMERA LIVRE (C-STICK)"
+                            android:text="SERBEST KAMERA (C-STICK)"
                             android:textColor="#FFC107"
                             android:textSize="11sp"
                             android:textStyle="bold"
@@ -872,7 +872,7 @@
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:orientation="horizontal" android:layout_marginBottom="10dp">
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                                android:layout_weight="1" android:text="Câmera Livre Ativada"
+                                android:layout_weight="1" android:text="Serbest Kamera Açık"
                                 android:textColor="#C8D8E8" android:textSize="12sp" android:layout_gravity="center_vertical" />
                             <CheckBox android:id="@+id/cb_free_camera"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -881,7 +881,7 @@
 
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:id="@+id/tv_cam_speed_label"
-                            android:text="Velocidade: 3"
+                            android:text="Hız: 3"
                             android:textColor="#8B9BB4" android:textSize="11sp" android:layout_marginBottom="4dp" />
                         <SeekBar android:id="@+id/sb_cam_speed"
                             android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -892,7 +892,7 @@
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:orientation="horizontal" android:layout_marginBottom="6dp">
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                                android:layout_weight="1" android:text="Inverter Eixo X"
+                                android:layout_weight="1" android:text="X Eksenini Ters Çevir"
                                 android:textColor="#C8D8E8" android:textSize="12sp" android:layout_gravity="center_vertical" />
                             <CheckBox android:id="@+id/cb_cam_invert_x"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -902,7 +902,7 @@
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:orientation="horizontal">
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                                android:layout_weight="1" android:text="Inverter Eixo Y"
+                                android:layout_weight="1" android:text="Y Eksenini Ters Çevir"
                                 android:textColor="#C8D8E8" android:textSize="12sp" android:layout_gravity="center_vertical" />
                             <CheckBox android:id="@+id/cb_cam_invert_y"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -931,7 +931,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Estilo de Layout do HUD"
+                            android:text="HUD Yerleşim Stili"
                             android:textColor="#8B9BB4"
                             android:textSize="11sp"
                             android:layout_marginBottom="4dp" />
@@ -946,7 +946,7 @@
 
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:id="@+id/tv_hud_scale_label"
-                            android:text="Escala HUD: 80%"
+                            android:text="HUD Ölçeği: 80%"
                             android:textColor="#8B9BB4" android:textSize="11sp" android:layout_marginBottom="4dp" />
                         <SeekBar android:id="@+id/sb_hud_scale"
                             android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -956,7 +956,7 @@
 
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:id="@+id/tv_hud_margin_x_label"
-                            android:text="Margem Horizontal (X): 4"
+                            android:text="Yatay Kenar Boşluğu (X): 4"
                             android:textColor="#8B9BB4" android:textSize="11sp" android:layout_marginBottom="4dp" />
                         <SeekBar android:id="@+id/sb_hud_margin_x"
                             android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -966,7 +966,7 @@
 
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:id="@+id/tv_hud_margin_y_label"
-                            android:text="Margem Vertical (Y): 1"
+                            android:text="Dikey Kenar Boşluğu (Y): 1"
                             android:textColor="#8B9BB4" android:textSize="11sp" android:layout_marginBottom="4dp" />
                         <SeekBar android:id="@+id/sb_hud_margin_y"
                             android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -977,7 +977,7 @@
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:orientation="horizontal" android:layout_marginBottom="6dp">
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                                android:layout_weight="1" android:text="Minimapa Visível"
+                                android:layout_weight="1" android:text="Mini Harita Görünür"
                                 android:textColor="#C8D8E8" android:textSize="12sp" android:layout_gravity="center_vertical" />
                             <CheckBox android:id="@+id/cb_minimap"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -987,7 +987,7 @@
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:orientation="horizontal" android:layout_marginBottom="6dp">
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                                android:layout_weight="1" android:text="Ícones no D-Pad"
+                                android:layout_weight="1" android:text="D-Pad Simgeleri"
                                 android:textColor="#C8D8E8" android:textSize="12sp" android:layout_gravity="center_vertical" />
                             <CheckBox android:id="@+id/cb_dpad_icons"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -997,7 +997,7 @@
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:orientation="horizontal" android:layout_marginBottom="10dp">
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                                android:layout_weight="1" android:text="Dicas de Itens no Inventário"
+                                android:layout_weight="1" android:text="Envanterde Eşya İpuçları"
                                 android:textColor="#C8D8E8" android:textSize="12sp" android:layout_gravity="center_vertical" />
                             <CheckBox android:id="@+id/cb_items_hint"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -1018,7 +1018,7 @@
                                 android:layout_weight="1"
                                 android:layout_marginRight="6dp"
                                 android:background="@drawable/btn_gold"
-                                android:text="✏️ Personalizar HUD"
+                                android:text="✏️ HUD'u Özelleştir"
                                 android:textColor="#1A1500"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
@@ -1030,7 +1030,7 @@
                                 android:background="@drawable/btn_dark"
                                 android:paddingLeft="12dp"
                                 android:paddingRight="12dp"
-                                android:text="↺ Padrão"
+                                android:text="↺ Varsayılan"
                                 android:textColor="#FFFFFF"
                                 android:textSize="11sp" />
                         </LinearLayout>
@@ -1064,7 +1064,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="OVERLAY VIRTUAL"
+                            android:text="SANAL KATMAN"
                             android:textColor="#FFC107"
                             android:textSize="11sp"
                             android:textStyle="bold"
@@ -1073,26 +1073,16 @@
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:orientation="horizontal" android:layout_marginBottom="6dp">
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                                android:layout_weight="1" android:text="Exibir Controles na Tela"
+                                android:layout_weight="1" android:text="Ekran Kontrollerini Göster"
                                 android:textColor="#C8D8E8" android:textSize="12sp" android:layout_gravity="center_vertical" />
                             <CheckBox android:id="@+id/cb_show_overlay"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                                 android:buttonTint="#FFD700" />
                         </LinearLayout>
 
-                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                            android:orientation="horizontal" android:layout_marginBottom="6dp">
-                            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                                android:layout_weight="1" android:text="Ocultar com Controle Físico"
-                                android:textColor="#C8D8E8" android:textSize="12sp" android:layout_gravity="center_vertical" />
-                            <CheckBox android:id="@+id/cb_auto_hide_gamepad"
-                                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:buttonTint="#FFD700" />
-                        </LinearLayout>
-
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:id="@+id/tv_opacity_label"
-                            android:text="Opacidade dos Controles: 100%"
+                            android:text="Kontrol Saydamlığı: 100%"
                             android:textColor="#8B9BB4" android:textSize="11sp" android:layout_marginBottom="2dp" />
                         <SeekBar android:id="@+id/sb_overlay_opacity"
                             android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -1103,7 +1093,7 @@
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:orientation="horizontal" android:layout_marginBottom="5dp">
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                                android:layout_weight="1" android:text="Feedback Háptico / Vibração"
+                                android:layout_weight="1" android:text="Dokunsal Geri Bildirim / Titreşim"
                                 android:textColor="#C8D8E8" android:textSize="12sp" android:layout_gravity="center_vertical" />
                             <CheckBox android:id="@+id/cb_haptic"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -1113,7 +1103,7 @@
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:orientation="horizontal" android:layout_marginBottom="5dp">
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                                android:layout_weight="1" android:text="Inverter Telas (Superior/Inferior)"
+                                android:layout_weight="1" android:text="Ekranları Değiştir (Üst/Alt)"
                                 android:textColor="#C8D8E8" android:textSize="12sp" android:layout_gravity="center_vertical" />
                             <CheckBox android:id="@+id/cb_swap_screens"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -1123,7 +1113,7 @@
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:orientation="horizontal" android:layout_marginBottom="5dp">
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                                android:layout_weight="1" android:text="Toque na Tela Inferior (Touchscreen)"
+                                android:layout_weight="1" android:text="Alt Ekrana Dokunma (Dokunmatik)"
                                 android:textColor="#C8D8E8" android:textSize="12sp" android:layout_gravity="center_vertical" />
                             <CheckBox android:id="@+id/cb_touch_screen"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -1133,7 +1123,7 @@
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:orientation="horizontal" android:layout_marginBottom="5dp">
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                                android:layout_weight="1" android:text="Centro Relativo do Analógico"
+                                android:layout_weight="1" android:text="Analogun Göreli Merkezi"
                                 android:textColor="#C8D8E8" android:textSize="12sp" android:layout_gravity="center_vertical" />
                             <CheckBox android:id="@+id/cb_joystick_rel_center"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -1143,7 +1133,7 @@
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:orientation="horizontal" android:layout_marginBottom="10dp">
                             <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                                android:layout_weight="1" android:text="Deslize no D-Pad"
+                                android:layout_weight="1" android:text="D-Pad Kaydırma"
                                 android:textColor="#C8D8E8" android:textSize="12sp" android:layout_gravity="center_vertical" />
                             <CheckBox android:id="@+id/cb_dpad_slide"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -1164,7 +1154,7 @@
                                 android:layout_weight="1"
                                 android:layout_marginRight="6dp"
                                 android:background="@drawable/btn_gold"
-                                android:text="✏️ Personalizar Controles"
+                                android:text="✏️ Kontrolleri Özelleştir"
                                 android:textColor="#1A1500"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
@@ -1176,7 +1166,7 @@
                                 android:background="@drawable/btn_dark"
                                 android:paddingLeft="12dp"
                                 android:paddingRight="12dp"
-                                android:text="↺ Padrão"
+                                android:text="↺ Varsayılan"
                                 android:textColor="#FFFFFF"
                                 android:textSize="11sp" />
                         </LinearLayout>
@@ -1210,7 +1200,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="STATUS INFINITO (VANTAGENS ATIVAS)"
+                            android:text="SONSUZ DURUM (AKTİF AVANTAJLAR)"
                             android:textColor="#FFC107"
                             android:textSize="11sp"
                             android:textStyle="bold"
@@ -1231,14 +1221,14 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="❤️  Vida Infinita (Invencível)"
+                                    android:text="❤️  Sonsuz Can (Yenilmez)"
                                     android:textColor="#C8D8E8"
                                     android:textSize="12sp"
                                     android:textStyle="bold" />
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Link não morre e a vida se mantém sempre cheia."
+                                    android:text="Link ölmez ve can her zaman dolu kalır."
                                     android:textColor="#8B9BB4"
                                     android:textSize="10sp" />
                             </LinearLayout>
@@ -1264,14 +1254,14 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="💚  Magia Infinita"
+                                    android:text="💚  Sonsuz Büyü"
                                     android:textColor="#C8D8E8"
                                     android:textSize="12sp"
                                     android:textStyle="bold" />
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="A barra de magia nunca se esgota."
+                                    android:text="Büyü çubuğu hiç tükenmez."
                                     android:textColor="#8B9BB4"
                                     android:textSize="10sp" />
                             </LinearLayout>
@@ -1297,14 +1287,14 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="💎  Rúpias Infinitas (500)"
+                                    android:text="💎  Sonsuz Rupi (500)"
                                     android:textColor="#C8D8E8"
                                     android:textSize="12sp"
                                     android:textStyle="bold" />
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Mantém 500 rúpias na carteira permanentemente."
+                                    android:text="Cüzdanda sürekli 500 rupi tutar."
                                     android:textColor="#8B9BB4"
                                     android:textSize="10sp" />
                             </LinearLayout>
@@ -1329,14 +1319,14 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="🏹  Munição Infinita"
+                                    android:text="🏹  Sonsuz Mühimmat"
                                     android:textColor="#C8D8E8"
                                     android:textSize="12sp"
                                     android:textStyle="bold" />
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Flechas, bombas, bombchus e sementes não acabam."
+                                    android:text="Oklar, bombalar, bombchu'lar ve tohumlar bitmez."
                                     android:textColor="#8B9BB4"
                                     android:textSize="10sp" />
                             </LinearLayout>
@@ -1360,7 +1350,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="AÇÕES INSTANTÂNEAS DE VIDA &amp; STATUS"
+                            android:text="ANLIK CAN &amp; DURUM İŞLEMLERİ"
                             android:textColor="#FFC107"
                             android:textSize="11sp"
                             android:textStyle="bold"
@@ -1379,7 +1369,7 @@
                                 android:layout_weight="1"
                                 android:layout_marginRight="6dp"
                                 android:background="@drawable/btn_gold"
-                                android:text="💖 20 Corações"
+                                android:text="💖 20 Kalp"
                                 android:textColor="#1A1500"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
@@ -1390,7 +1380,7 @@
                                 android:layout_height="38dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/btn_dark"
-                                android:text="❤️ Encher Vida"
+                                android:text="❤️ Canı Doldur"
                                 android:textColor="#FFFFFF"
                                 android:textSize="11sp" />
                         </LinearLayout>
@@ -1408,7 +1398,7 @@
                                 android:layout_weight="1"
                                 android:layout_marginRight="6dp"
                                 android:background="@drawable/btn_dark"
-                                android:text="✨ Barra Magia Dupla"
+                                android:text="✨ Çift Büyü Çubuğu"
                                 android:textColor="#FFFFFF"
                                 android:textSize="11sp" />
 
@@ -1418,7 +1408,7 @@
                                 android:layout_height="38dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/btn_dark"
-                                android:text="💎 500 Rúpias"
+                                android:text="💎 500 Rupi"
                                 android:textColor="#FFFFFF"
                                 android:textSize="11sp" />
                         </LinearLayout>
@@ -1435,7 +1425,7 @@
                                 android:layout_weight="1"
                                 android:layout_marginRight="6dp"
                                 android:background="@drawable/btn_dark"
-                                android:text="🛡️ Todas as Armas"
+                                android:text="🛡️ Tüm Silahlar"
                                 android:textColor="#FFFFFF"
                                 android:textSize="11sp" />
 
@@ -1445,7 +1435,7 @@
                                 android:layout_height="38dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/btn_dark"
-                                android:text="🏅 Todos Medalhões"
+                                android:text="🏅 Tüm Madalyonlar"
                                 android:textColor="#FFFFFF"
                                 android:textSize="11sp" />
                         </LinearLayout>
@@ -1463,7 +1453,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="SELECIONAR ITENS PARA ADICIONAR AO INVENTÁRIO"
+                            android:text="ENVANTERE EKLENECEK EŞYAYI SEÇ"
                             android:textColor="#FFC107"
                             android:textSize="11sp"
                             android:textStyle="bold"
@@ -1472,7 +1462,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Escolha qualquer item abaixo e clique em Adicionar para colocar diretamente no inventário de Link:"
+                            android:text="Aşağıdan bir eşya seçin ve Ekle'ye dokunarak doğrudan Link'in envanterine ekleyin:"
                             android:textColor="#8B9BB4"
                             android:textSize="10sp"
                             android:layout_marginBottom="8dp" />
@@ -1498,7 +1488,7 @@
                                 android:layout_weight="1"
                                 android:layout_marginRight="6dp"
                                 android:background="@drawable/btn_gold"
-                                android:text="➕ Adicionar Este Item"
+                                android:text="➕ Bu Eşyayı Ekle"
                                 android:textColor="#1A1500"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
@@ -1509,7 +1499,7 @@
                                 android:layout_height="38dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/btn_dark"
-                                android:text="🎒 Todos os 24 Itens"
+                                android:text="🎒 24 Eşyanın Hepsi"
                                 android:textColor="#FFFFFF"
                                 android:textSize="11sp" />
                         </LinearLayout>
@@ -1527,7 +1517,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="CALABOUÇOS &amp; SKULLTULAS"
+                            android:text="ZİNDANLAR &amp; SKULLTULA'LAR"
                             android:textColor="#FFC107"
                             android:textSize="11sp"
                             android:textStyle="bold"
@@ -1545,7 +1535,7 @@
                                 android:layout_weight="1"
                                 android:layout_marginRight="6dp"
                                 android:background="@drawable/btn_dark"
-                                android:text="🗝️ Chaves &amp; Mapa do Calabouço"
+                                android:text="🗝️ Anahtarlar &amp; Zindan Haritası"
                                 android:textColor="#FFFFFF"
                                 android:textSize="10sp" />
 
@@ -1555,7 +1545,7 @@
                                 android:layout_height="38dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/btn_dark"
-                                android:text="💀 100 Skulltulas"
+                                android:text="💀 100 Skulltula"
                                 android:textColor="#FFFFFF"
                                 android:textSize="11sp" />
                         </LinearLayout>
