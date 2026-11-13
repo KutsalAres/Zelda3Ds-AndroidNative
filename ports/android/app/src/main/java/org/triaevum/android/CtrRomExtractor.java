@@ -148,6 +148,19 @@ public final class CtrRomExtractor {
             // Skip the 0x1000 IVFC superblock to get the pure Level-3 RomFS service view
             long level3Offset = romfsOffset + 0x1000L;
             long level3Size = romfsSize - 0x1000L;
+            // romfsSize also covers the IVFC hash levels stored after Level 3.
+            // The real Level-3 size is a u64 at 0x44 of the IVFC header.
+            byte[] ivfcHeader = new byte[0x50];
+            raf.seek(romfsOffset);
+            raf.readFully(ivfcHeader);
+            long ivfcLevel3Size = 0;
+            for (int i = 7; i >= 0; i--) {
+                ivfcLevel3Size = (ivfcLevel3Size << 8) | (ivfcHeader[0x44 + i] & 0xFFL);
+            }
+            if (ivfcLevel3Size > 0 && ivfcLevel3Size <= level3Size) {
+                level3Size = ivfcLevel3Size;
+            }
+            Log.i(TAG, "RomFS Level-3 size: " + level3Size);
 
             if (callback != null) callback.onProgress("Extraindo RomFS dos dados do jogo...", 30);
 
