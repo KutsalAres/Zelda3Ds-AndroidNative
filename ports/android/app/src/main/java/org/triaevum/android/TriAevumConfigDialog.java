@@ -108,7 +108,6 @@ public final class TriAevumConfigDialog extends Dialog {
 
     // Controles
     private CheckBox mCbShowOverlay;
-    private CheckBox mCbAutoHideGamepad;
     private SeekBar  mSbOpacity;
     private TextView mTvOpacityLabel;
     private CheckBox mCbHaptic;
@@ -261,7 +260,6 @@ public final class TriAevumConfigDialog extends Dialog {
 
         // Controles
         mCbShowOverlay       = findViewById(R.id.cb_show_overlay);
-        mCbAutoHideGamepad   = findViewById(R.id.cb_auto_hide_gamepad);
         mSbOpacity           = findViewById(R.id.sb_overlay_opacity);
         mTvOpacityLabel      = findViewById(R.id.tv_opacity_label);
         mCbHaptic            = findViewById(R.id.cb_haptic);
@@ -392,7 +390,7 @@ public final class TriAevumConfigDialog extends Dialog {
             mCbDirectionalShadows.setOnCheckedChangeListener((btn, isChecked) -> {
                 if (isChecked && !mConfig.isDirectionalShadowsSupported()) {
                     Toast.makeText(getContext(),
-                        "Nota: Sombras dinâmicas exigem Vulkan 1.3 / Dynamic Rendering (Driver Turnip recomendado).",
+                        "Not: Dinamik gölgeler Vulkan 1.3 / Dynamic Rendering gerektirir (Turnip sürücüsü önerilir).",
                         Toast.LENGTH_LONG).show();
                 }
             });
@@ -425,12 +423,12 @@ public final class TriAevumConfigDialog extends Dialog {
         int fovProgress = Math.max(0, Math.min(5, Math.round((fov - 1.0f) / 0.05f)));
         mSbFov.setProgress(fovProgress);
         int fovPct = 100 + (fovProgress * 5);
-        mTvFovLabel.setText("Campo de Visão (FOV): " + fovPct + "%" + (fovProgress == 0 ? " (Padrão)" : ""));
+        mTvFovLabel.setText("Görüş Alanı (FOV): " + fovPct + "%" + (fovProgress == 0 ? " (Varsayılan)" : ""));
 
         mSbFov.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override public void onProgressChanged(SeekBar sb, int progress, boolean fromUser) {
                 int p = 100 + (progress * 5);
-                mTvFovLabel.setText("Campo de Visão (FOV): " + p + "%" + (progress == 0 ? " (Padrão)" : ""));
+                mTvFovLabel.setText("Görüş Alanı (FOV): " + p + "%" + (progress == 0 ? " (Varsayılan)" : ""));
             }
             @Override public void onStartTrackingTouch(SeekBar sb) {}
             @Override public void onStopTrackingTouch(SeekBar sb) {}
@@ -440,7 +438,7 @@ public final class TriAevumConfigDialog extends Dialog {
         mCbFreeCamera.setChecked(mConfig.isFreeCameraEnabled());
         int speedLevel = mConfig.getFreeCameraSpeedLevel();
         mSbCamSpeed.setProgress(speedLevel - 1); // 0-4 → levels 1-5
-        mTvCamSpeedLabel.setText("Velocidade: " + speedLevel);
+        mTvCamSpeedLabel.setText("Hız: " + speedLevel);
         mCbCamInvertX.setChecked(mConfig.isFreeCameraInvertX());
         mCbCamInvertY.setChecked(mConfig.isFreeCameraInvertY());
 
@@ -459,15 +457,15 @@ public final class TriAevumConfigDialog extends Dialog {
         // map 0.5-1.5 → seekbar 0-10
         int hudProg = Math.round((hudScale - 0.5f) / 0.1f);
         mSbHudScale.setProgress(Math.max(0, Math.min(10, hudProg)));
-        mTvHudScaleLabel.setText("Escala HUD: " + hudPct + "%");
+        mTvHudScaleLabel.setText("HUD Ölçeği: " + hudPct + "%");
 
         // Margins (-3..16 -> seekbar 0..19)
         int marginX = mConfig.getHudMarginX();
         int marginY = mConfig.getHudMarginY();
         mSbHudMarginX.setProgress(Math.max(0, Math.min(19, marginX + 3)));
-        mTvHudMarginXLabel.setText("Margem X (Horizontal): " + marginX);
+        mTvHudMarginXLabel.setText("Kenar Boşluğu X (Yatay): " + marginX);
         mSbHudMarginY.setProgress(Math.max(0, Math.min(19, marginY + 3)));
-        mTvHudMarginYLabel.setText("Margem Y (Vertical): " + marginY);
+        mTvHudMarginYLabel.setText("Kenar Boşluğu Y (Dikey): " + marginY);
 
         mCbMinimap.setChecked(mConfig.isMinimapVisible());
         mCbDpadIcons.setChecked(mConfig.isRenderDpadIcons());
@@ -486,7 +484,6 @@ public final class TriAevumConfigDialog extends Dialog {
 
         // Controls — read directly from SharedPreferences (same keys as EmulationMenuSettings)
         boolean showOverlay = (mOverlay != null) ? mOverlay.isShowControls() : mPrefs.getBoolean("EmulationMenuSettings_ShowOverlay", true);
-        boolean autoHide    = (mOverlay != null) ? mOverlay.isAutoHideGamepad() : mPrefs.getBoolean("EmulationMenuSettings_AutoHideGamepad", true);
         boolean haptic      = (mOverlay != null) ? mOverlay.isHapticFeedbackEnabled() : mPrefs.getBoolean("EmulationMenuSettings_HapticFeedback", true);
         boolean swapScr     = mPrefs.getBoolean("EmulationMenuSettings_SwapScreens", false);
         boolean touchScreen = (mOverlay != null) ? mOverlay.isTouchEnabled() : mPrefs.getBoolean("EmulationMenuSettings_TouchEnabled", false);
@@ -494,14 +491,12 @@ public final class TriAevumConfigDialog extends Dialog {
         boolean dpadSlide   = mPrefs.getBoolean("EmulationMenuSettings_DpadSlideEnable", true);
         Log.d(TAG, "  [prefs=" + PREFS_NAME + "]"
             + " showOverlay=" + showOverlay
-            + " autoHide=" + autoHide
             + " haptic=" + haptic
             + " swapScreens=" + swapScr
             + " touchScreen=" + touchScreen
             + " joystickRelCenter=" + joyRel
             + " dpadSlide=" + dpadSlide);
         mCbShowOverlay.setChecked(showOverlay);
-        mCbAutoHideGamepad.setChecked(autoHide);
         mCbHaptic.setChecked(haptic);
         mCbSwapScreens.setChecked(swapScr);
         mCbTouchScreen.setChecked(touchScreen);
@@ -512,12 +507,12 @@ public final class TriAevumConfigDialog extends Dialog {
         int overlayOpacity = 100;
         if (mOverlay != null) overlayOpacity = mOverlay.getOverlayOpacityPercent();
         mSbOpacity.setProgress(overlayOpacity);
-        mTvOpacityLabel.setText("Opacidade dos Controles: " + overlayOpacity + "%");
+        mTvOpacityLabel.setText("Kontrol Saydamlığı: " + overlayOpacity + "%");
 
         // SeekBar live listeners
         mSbCamSpeed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override public void onProgressChanged(SeekBar sb, int progress, boolean fromUser) {
-                mTvCamSpeedLabel.setText("Velocidade: " + (progress + 1));
+                mTvCamSpeedLabel.setText("Hız: " + (progress + 1));
             }
             @Override public void onStartTrackingTouch(SeekBar sb) {}
             @Override public void onStopTrackingTouch(SeekBar sb) {}
@@ -526,7 +521,7 @@ public final class TriAevumConfigDialog extends Dialog {
         mSbHudScale.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override public void onProgressChanged(SeekBar sb, int progress, boolean fromUser) {
                 float scale = 0.5f + progress * 0.1f;
-                mTvHudScaleLabel.setText("Escala HUD: " + Math.round(scale * 100) + "%");
+                mTvHudScaleLabel.setText("HUD Ölçeği: " + Math.round(scale * 100) + "%");
             }
             @Override public void onStartTrackingTouch(SeekBar sb) {}
             @Override public void onStopTrackingTouch(SeekBar sb) {}
@@ -535,7 +530,7 @@ public final class TriAevumConfigDialog extends Dialog {
         mSbHudMarginX.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override public void onProgressChanged(SeekBar sb, int progress, boolean fromUser) {
                 int val = progress - 3;
-                mTvHudMarginXLabel.setText("Margem X (Horizontal): " + val);
+                mTvHudMarginXLabel.setText("Kenar Boşluğu X (Yatay): " + val);
             }
             @Override public void onStartTrackingTouch(SeekBar sb) {}
             @Override public void onStopTrackingTouch(SeekBar sb) {}
@@ -544,7 +539,7 @@ public final class TriAevumConfigDialog extends Dialog {
         mSbHudMarginY.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override public void onProgressChanged(SeekBar sb, int progress, boolean fromUser) {
                 int val = progress - 3;
-                mTvHudMarginYLabel.setText("Margem Y (Vertical): " + val);
+                mTvHudMarginYLabel.setText("Kenar Boşluğu Y (Dikey): " + val);
             }
             @Override public void onStartTrackingTouch(SeekBar sb) {}
             @Override public void onStopTrackingTouch(SeekBar sb) {}
@@ -553,7 +548,7 @@ public final class TriAevumConfigDialog extends Dialog {
         mSbOpacity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override public void onProgressChanged(SeekBar sb, int progress, boolean fromUser) {
                 int pct = Math.max(20, progress); // minimum 20%
-                mTvOpacityLabel.setText("Opacidade dos Controles: " + pct + "%");
+                mTvOpacityLabel.setText("Kontrol Saydamlığı: " + pct + "%");
                 if (fromUser && mOverlay != null) {
                     mOverlay.setOverlayOpacityPercent(pct);
                 }
@@ -601,37 +596,37 @@ public final class TriAevumConfigDialog extends Dialog {
         if (mBtnMaxHearts != null) {
             mBtnMaxHearts.setOnClickListener(v -> {
                 mConfig.triggerCheatAction("max_hearts");
-                Toast.makeText(getContext(), "💖 20 Corações e Defesa Dupla aplicados!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "💖 20 Kalp ve Çift Savunma uygulandı!", Toast.LENGTH_SHORT).show();
             });
         }
         if (mBtnHealFull != null) {
             mBtnHealFull.setOnClickListener(v -> {
                 mConfig.triggerCheatAction("heal_full");
-                Toast.makeText(getContext(), "❤️ Vida completamente restaurada!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "❤️ Can tamamen yenilendi!", Toast.LENGTH_SHORT).show();
             });
         }
         if (mBtnMaxMagic != null) {
             mBtnMaxMagic.setOnClickListener(v -> {
                 mConfig.triggerCheatAction("max_magic");
-                Toast.makeText(getContext(), "✨ Barra de Magia Dupla liberada e cheia!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "✨ Çift Büyü Çubuğu açıldı ve dolduruldu!", Toast.LENGTH_SHORT).show();
             });
         }
         if (mBtnMaxRupees != null) {
             mBtnMaxRupees.setOnClickListener(v -> {
                 mConfig.triggerCheatAction("max_rupees");
-                Toast.makeText(getContext(), "💎 Carteira Expandida com 500 Rúpias!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "💎 Cüzdan genişletildi, 500 Rupi!", Toast.LENGTH_SHORT).show();
             });
         }
         if (mBtnAllEquipment != null) {
             mBtnAllEquipment.setOnClickListener(v -> {
                 mConfig.triggerCheatAction("all_equipment");
-                Toast.makeText(getContext(), "🛡️ Todas Espadas, Escudos, Túnicas e Botas liberados!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "🛡️ Tüm Kılıçlar, Kalkanlar, Tunikler ve Botlar açıldı!", Toast.LENGTH_SHORT).show();
             });
         }
         if (mBtnAllMedallions != null) {
             mBtnAllMedallions.setOnClickListener(v -> {
                 mConfig.triggerCheatAction("all_medallions");
-                Toast.makeText(getContext(), "🏅 Todos os Medalhões e Pedras Espirituais obtidos!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "🏅 Tüm Madalyonlar ve Ruh Taşları alındı!", Toast.LENGTH_SHORT).show();
             });
         }
         if (mBtnAddSelectedItem != null && mSpSelectItem != null) {
@@ -641,26 +636,26 @@ public final class TriAevumConfigDialog extends Dialog {
                     String key = TriAevumConfigManager.CHEAT_ITEM_KEYS[pos];
                     String label = TriAevumConfigManager.CHEAT_ITEM_LABELS[pos];
                     mConfig.triggerCheatAction("item_" + key);
-                    Toast.makeText(getContext(), "➕ " + label + " adicionado ao inventário!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "➕ " + label + " envantere eklendi!", Toast.LENGTH_SHORT).show();
                 }
             });
         }
         if (mBtnAddAllItems != null) {
             mBtnAddAllItems.setOnClickListener(v -> {
                 mConfig.triggerCheatAction("all_items");
-                Toast.makeText(getContext(), "🎒 Todos os 24 itens colocados no inventário!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "🎒 24 eşyanın hepsi envantere eklendi!", Toast.LENGTH_SHORT).show();
             });
         }
         if (mBtnDungeonKeys != null) {
             mBtnDungeonKeys.setOnClickListener(v -> {
                 mConfig.triggerCheatAction("dungeon_keys");
-                Toast.makeText(getContext(), "🗝️ Chaves, Chave do Chefe, Mapa e Bússola liberados!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "🗝️ Anahtarlar, Patron Anahtarı, Harita ve Pusula açıldı!", Toast.LENGTH_SHORT).show();
             });
         }
         if (mBtnAllSkulltulas != null) {
             mBtnAllSkulltulas.setOnClickListener(v -> {
                 mConfig.triggerCheatAction("all_skulltulas");
-                Toast.makeText(getContext(), "🕷️ 100 Medalhões Skulltula Dourada concedidos!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "🕷️ 100 Altın Skulltula Madalyonu verildi!", Toast.LENGTH_SHORT).show();
             });
         }
     }
@@ -736,7 +731,7 @@ public final class TriAevumConfigDialog extends Dialog {
         btnSave.setOnClickListener(v -> {
             saveToConfig();
             mConfig.applyLiveSettings();
-            Toast.makeText(getContext(), "Configurações salvas e aplicadas!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Ayarlar kaydedildi ve uygulandı!", Toast.LENGTH_SHORT).show();
             dismiss();
         });
 
@@ -749,7 +744,6 @@ public final class TriAevumConfigDialog extends Dialog {
             mConfig.applyLiveSettings();
             mPrefs.edit()
                 .putBoolean("EmulationMenuSettings_ShowOverlay", true)
-                .putBoolean("EmulationMenuSettings_AutoHideGamepad", true)
                 .putBoolean("EmulationMenuSettings_HapticFeedback", true)
                 .putBoolean("EmulationMenuSettings_SwapScreens", false)
                 .putBoolean("EmulationMenuSettings_TouchEnabled", false)
@@ -758,7 +752,6 @@ public final class TriAevumConfigDialog extends Dialog {
                 .apply();
             if (mOverlay != null) {
                 mOverlay.setShowControls(true);
-                mOverlay.setAutoHideGamepad(true);
                 mOverlay.setHapticFeedbackEnabled(true);
                 mOverlay.setTouchEnabled(false);
                 mOverlay.setOverlayOpacityPercent(100);
@@ -770,7 +763,7 @@ public final class TriAevumConfigDialog extends Dialog {
                 Log.w(TAG, "Failed to reset native control settings", t);
             }
             loadFromConfig();
-            Toast.makeText(getContext(), "Padrões restaurados e aplicados.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Varsayılanlar geri yüklendi ve uygulandı.", Toast.LENGTH_SHORT).show();
         });
 
         Button btnEditHud = findViewById(R.id.btn_edit_hud_layout);
@@ -807,7 +800,7 @@ public final class TriAevumConfigDialog extends Dialog {
             btnResetControls.setOnClickListener(v -> {
                 if (mOverlay != null) {
                     mOverlay.resetControlPositions();
-                    Toast.makeText(getContext(), "Posições dos controles restauradas para o padrão!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Kontrol konumları varsayılana döndürüldü!", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -821,7 +814,7 @@ public final class TriAevumConfigDialog extends Dialog {
         if (mBtnExportSave != null) {
             mBtnExportSave.setOnClickListener(v -> {
                 if (!TriAevumSaveManager.hasSaveFiles(getContext())) {
-                    Toast.makeText(getContext(), "Nenhum arquivo de save gravado ainda para exportar.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Dışa aktarılacak kayıt dosyası henüz yok.", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (mActivity instanceof TriAevumActivity) {
@@ -835,16 +828,18 @@ public final class TriAevumConfigDialog extends Dialog {
         if (mBtnImportSave != null) {
             mBtnImportSave.setOnClickListener(v -> {
                 new android.app.AlertDialog.Builder(getContext(), android.R.style.Theme_DeviceDefault_Dialog_Alert)
-                    .setTitle("Importar Save")
-                    .setMessage("Importar um novo save atualizará os arquivos de progresso atuais na pasta de salvamento.\n\nDeseja continuar e selecionar o arquivo (.zip / save)?")
-                    .setPositiveButton("Selecionar Arquivo", (dialog, which) -> {
+                    .setTitle("Kaydı İçe Aktar")
+                    .setMessage("Yeni bir kaydı içe aktarmak, kayıt klasöründeki mevcut ilerleme dosyalarını günceller.
+
+Devam edip dosyayı (.zip / kayıt) seçmek istiyor musunuz?")
+                    .setPositiveButton("Dosya Seç", (dialog, which) -> {
                         if (mActivity instanceof TriAevumActivity) {
                             ((TriAevumActivity) mActivity).startImportSaveFlow(() -> {
                                 refreshSaveStatus();
                             });
                         }
                     })
-                    .setNegativeButton("Cancelar", null)
+                    .setNegativeButton("İptal", null)
                     .show();
             });
         }
@@ -867,7 +862,7 @@ public final class TriAevumConfigDialog extends Dialog {
                 mConfig.setCustomTexturesPath("");
                 TriAevumConfigManager.nativeReloadGraphicsSettings();
                 updateTextureDirectoryDisplay();
-                Toast.makeText(getContext(), "Diretório de texturas redefinido para a pasta padrão do aplicativo!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Doku klasörü uygulamanın varsayılan klasörüne sıfırlandı!", Toast.LENGTH_SHORT).show();
             });
         }
 
@@ -889,19 +884,19 @@ public final class TriAevumConfigDialog extends Dialog {
             mBtnDeleteDriver.setOnClickListener(v -> {
                 int pos = mSpGpuDriver.getSelectedItemPosition();
                 if (pos <= 0 || pos > mInstalledDrivers.size()) {
-                    Toast.makeText(getContext(), "O driver padrão do sistema não pode ser excluído.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Sistem varsayılan sürücüsü silinemez.", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 TriAevumCustomDriverManager.CustomDriverInfo toDelete = mInstalledDrivers.get(pos - 1);
                 new android.app.AlertDialog.Builder(getContext())
-                    .setTitle("Excluir Driver")
-                    .setMessage("Deseja realmente excluir o driver \"" + toDelete.name + "\"?")
-                    .setPositiveButton("Sim", (dialog, which) -> {
+                    .setTitle("Sürücüyü Sil")
+                    .setMessage("Şu sürücüyü silmek istediğinize emin misiniz: "" + toDelete.name + "\"?")
+                    .setPositiveButton("Evet", (dialog, which) -> {
                         mCustomDriverManager.deleteDriver(toDelete.id);
-                        Toast.makeText(getContext(), "Driver excluído.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Sürücü silindi.", Toast.LENGTH_SHORT).show();
                         loadGpuDriversList();
                     })
-                    .setNegativeButton("Cancelar", null)
+                    .setNegativeButton("İptal", null)
                     .show();
             });
         }
@@ -911,7 +906,7 @@ public final class TriAevumConfigDialog extends Dialog {
         if (mSpGpuDriver == null || mCustomDriverManager == null) return;
         mInstalledDrivers = mCustomDriverManager.getInstalledDrivers();
         java.util.List<String> labels = new java.util.ArrayList<>();
-        labels.add("📱 Padrão do Sistema (Qualcomm)");
+        labels.add("📱 Sistem Varsayılanı");
         int selectedIndex = 0;
         String currentSelectedId = mCustomDriverManager.getSelectedDriverId();
 
@@ -932,10 +927,12 @@ public final class TriAevumConfigDialog extends Dialog {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-                    mTvDriverInfo.setText("📱 Driver do Sistema: Qualcomm Adreno Stock padrão.");
+                    mTvDriverInfo.setText("📱 Sistem Sürücüsü: cihazın varsayılan GPU sürücüsü.");
                 } else if (position - 1 < mInstalledDrivers.size()) {
                     TriAevumCustomDriverManager.CustomDriverInfo d = mInstalledDrivers.get(position - 1);
-                    mTvDriverInfo.setText("⚡ " + d.name + "\nAutor: " + d.author + " | Versão: " + d.driverVersion + "\nArquivo: " + d.libraryName);
+                    mTvDriverInfo.setText("⚡ " + d.name + "
+Yazar: " + d.author + " | Sürüm: " + d.driverVersion + "
+Dosya: " + d.libraryName);
                 }
             }
             @Override
@@ -953,13 +950,13 @@ public final class TriAevumConfigDialog extends Dialog {
         }
 
         if (!dir.exists() || !dir.isDirectory()) {
-            Toast.makeText(getContext(), "Pasta de texturas não encontrada: " + dir.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Doku klasörü bulunamadı: " + dir.getAbsolutePath(), Toast.LENGTH_SHORT).show();
             return;
         }
 
         android.app.ProgressDialog progress = new android.app.ProgressDialog(getContext(), android.R.style.Theme_DeviceDefault_Dialog_Alert);
-        progress.setTitle("⚡ Pré-carregando Texturas");
-        progress.setMessage("Indexando e carregando texturas na memória...");
+        progress.setTitle("⚡ Dokular Önceden Yükleniyor");
+        progress.setMessage("Dokular indeksleniyor ve belleğe yükleniyor...");
         progress.setProgressStyle(android.app.ProgressDialog.STYLE_HORIZONTAL);
         progress.setMax(100);
         progress.setCancelable(false);
@@ -971,19 +968,19 @@ public final class TriAevumConfigDialog extends Dialog {
                     int percent = total > 0 ? (int)((current * 100L) / total) : 0;
                     new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
                         progress.setProgress(percent);
-                        progress.setMessage(String.format(java.util.Locale.getDefault(), "%d / %d texturas (%d%%)", current, total, percent));
+                        progress.setMessage(String.format(java.util.Locale.getDefault(), "%d / %d doku (%d%%)", current, total, percent));
                     });
                 });
 
                 new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
                     progress.dismiss();
-                    Toast.makeText(getContext(), "✅ " + loaded + " texturas pré-carregadas na memória com sucesso!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "✅ " + loaded + " doku belleğe başarıyla yüklendi!", Toast.LENGTH_LONG).show();
                     updateTextureDirectoryDisplay();
                 });
             } catch (Throwable t) {
                 new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
                     progress.dismiss();
-                    Toast.makeText(getContext(), "Erro ao pré-carregar: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Ön yükleme hatası: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 });
             }
         }).start();
@@ -994,16 +991,16 @@ public final class TriAevumConfigDialog extends Dialog {
         String path = mConfig.getCustomTexturesPath();
         if (path == null || path.trim().isEmpty()) {
             java.io.File defaultDir = TriAevumTextureManager.getDefaultTexturesDir(getContext());
-            mTvCustomTexturesPath.setText("Diretório: Padrão (" + defaultDir.getAbsolutePath() + ")");
-            mTvCustomTexturesCount.setText("Verificando texturas...");
+            mTvCustomTexturesPath.setText("Klasör: Varsayılan (" + defaultDir.getAbsolutePath() + ")");
+            mTvCustomTexturesCount.setText("Dokular kontrol ediliyor...");
             TriAevumTextureManager.countTexturesAsync(defaultDir.getAbsolutePath(), (count, summary) -> {
                 if (mTvCustomTexturesCount != null) {
                     mTvCustomTexturesCount.setText(summary);
                 }
             });
         } else {
-            mTvCustomTexturesPath.setText("Diretório: " + path);
-            mTvCustomTexturesCount.setText("Verificando texturas...");
+            mTvCustomTexturesPath.setText("Klasör: " + path);
+            mTvCustomTexturesCount.setText("Dokular kontrol ediliyor...");
             TriAevumTextureManager.countTexturesAsync(path, (count, summary) -> {
                 if (mTvCustomTexturesCount != null) {
                     mTvCustomTexturesCount.setText(summary);
@@ -1030,7 +1027,8 @@ public final class TriAevumConfigDialog extends Dialog {
                 mConfig.setLanguageCode(lang);
                 if (!lang.equalsIgnoreCase(oldLang)) {
                     Toast.makeText(getContext(),
-                        "Idioma alterado para " + mLanguageOptions.get(langIdx).label + ".\nReinicie o jogo para aplicar as alterações.",
+                        "Dil değiştirildi: " + mLanguageOptions.get(langIdx).label + ".
+Değişiklikler için oyunu yeniden başlatın.",
                         Toast.LENGTH_LONG).show();
                 }
             } else if (langIdx >= 0 && langIdx < TriAevumConfigManager.LANGUAGE_CODES.length) {
@@ -1040,7 +1038,8 @@ public final class TriAevumConfigDialog extends Dialog {
                 mConfig.setLanguageCode(lang);
                 if (!lang.equalsIgnoreCase(oldLang)) {
                     Toast.makeText(getContext(),
-                        "Idioma alterado para " + TriAevumConfigManager.LANGUAGE_LABELS[langIdx] + ".\nReinicie o jogo para aplicar as alterações.",
+                        "Dil değiştirildi: " + TriAevumConfigManager.LANGUAGE_LABELS[langIdx] + ".
+Değişiklikler için oyunu yeniden başlatın.",
                         Toast.LENGTH_LONG).show();
                 }
             }
@@ -1141,7 +1140,6 @@ public final class TriAevumConfigDialog extends Dialog {
 
         // Controles — write directly to SharedPreferences (same keys as EmulationMenuSettings)
         boolean showOverlay = mCbShowOverlay.isChecked();
-        boolean autoHide = mCbAutoHideGamepad.isChecked();
         boolean haptic = mCbHaptic.isChecked();
         boolean swapScr = mCbSwapScreens.isChecked();
         boolean touchScreen = mCbTouchScreen.isChecked();
@@ -1149,7 +1147,6 @@ public final class TriAevumConfigDialog extends Dialog {
         boolean dpadSlide = mCbDpadSlide.isChecked();
 
         Log.d(TAG, "  saving controls: showOverlay=" + showOverlay
-            + " autoHide=" + autoHide
             + " haptic=" + haptic
             + " swapScreens=" + swapScr
             + " touchScreen=" + touchScreen
@@ -1157,7 +1154,6 @@ public final class TriAevumConfigDialog extends Dialog {
             + " dpadSlide=" + dpadSlide);
         mPrefs.edit()
             .putBoolean("EmulationMenuSettings_ShowOverlay", showOverlay)
-            .putBoolean("EmulationMenuSettings_AutoHideGamepad", autoHide)
             .putBoolean("EmulationMenuSettings_HapticFeedback", haptic)
             .putBoolean("EmulationMenuSettings_SwapScreens", swapScr)
             .putBoolean("EmulationMenuSettings_TouchEnabled", touchScreen)
@@ -1167,7 +1163,6 @@ public final class TriAevumConfigDialog extends Dialog {
 
         if (mOverlay != null) {
             mOverlay.setShowControls(showOverlay);
-            mOverlay.setAutoHideGamepad(autoHide);
             mOverlay.setHapticFeedbackEnabled(haptic);
             mOverlay.setTouchEnabled(touchScreen);
             mOverlay.setOverlayOpacityPercent(mSbOpacity.getProgress());
@@ -1189,7 +1184,7 @@ public final class TriAevumConfigDialog extends Dialog {
             }
             if (!prevDriver.equals(newDriver)) {
                 mCustomDriverManager.setSelectedDriverId(newDriver);
-                Toast.makeText(getContext(), "Driver GPU alterado! Reinicie o jogo para aplicar o novo driver.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "GPU sürücüsü değişti! Yeni sürücü için oyunu yeniden başlatın.", Toast.LENGTH_LONG).show();
             }
         }
         Log.d(TAG, "--- saveToConfig END ---");

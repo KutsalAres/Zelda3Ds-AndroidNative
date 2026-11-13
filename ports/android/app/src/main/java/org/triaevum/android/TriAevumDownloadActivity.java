@@ -140,11 +140,11 @@ public class TriAevumDownloadActivity extends Activity {
         if (isGameInstalled(this)) {
             mReadyToStart = true;
             mBtnAction.setVisibility(View.GONE);
-            mBtnAction.setText("Iniciar Jogo");
+            mBtnAction.setText("Oyunu Başlat");
             mBtnAction.setOnClickListener(v -> launchGame());
             mBtnChangeDirectory.setVisibility(View.GONE);
             mBtnChangeDirectory.setOnClickListener(v -> pickRomDirectory());
-            mTvStatus.setText("ROM pronta para jogar!");
+            mTvStatus.setText("ROM oynamaya hazır!");
             mTvTouchToStart.setVisibility(View.VISIBLE);
             AlphaAnimation pulse = new AlphaAnimation(0.25f, 1.0f);
             pulse.setDuration(600);
@@ -153,8 +153,8 @@ public class TriAevumDownloadActivity extends Activity {
             mTvTouchToStart.startAnimation(pulse);
         } else {
             mBtnAction.setVisibility(View.VISIBLE);
-            mBtnAction.setText("Selecionar Pasta da ROM");
-            mTvStatus.setText("Selecione o diretório onde estão os arquivos da ROM para começar");
+            mBtnAction.setText("ROM Klasörünü Seç");
+            mTvStatus.setText("Başlamak için ROM dosyalarının bulunduğu klasörü seçin");
             mBtnAction.setOnClickListener(v -> requestStoragePermissionAndPickRomDirectory());
             mBtnChangeDirectory.setVisibility(View.GONE);
             mTvTouchToStart.setVisibility(View.GONE);
@@ -189,7 +189,7 @@ public class TriAevumDownloadActivity extends Activity {
         }
         mReadyToStart = true;
         mIsDownloading = false;
-        mTvStatus.setText("ROM pronta para jogar!");
+        mTvStatus.setText("ROM oynamaya hazır!");
         mPbDownload.setProgress(100);
         mTvPercent.setText("100%");
         mLayoutProgressDetails.setVisibility(View.GONE);
@@ -465,9 +465,9 @@ public class TriAevumDownloadActivity extends Activity {
         if (!isGameInstalled(this)) {
             mReadyToStart = false;
             mMainHandler.post(() -> {
-                mTvStatus.setText("Arquivos do jogo não encontrados. Selecione a pasta da ROM novamente.");
+                mTvStatus.setText("Oyun dosyaları bulunamadı. ROM klasörünü yeniden seçin.");
                 mBtnAction.setVisibility(View.VISIBLE);
-                mBtnAction.setText("Selecionar Pasta da ROM");
+                mBtnAction.setText("ROM Klasörünü Seç");
                 mBtnAction.setOnClickListener(v -> requestStoragePermissionAndPickRomDirectory());
                 if (mBtnChangeDirectory != null) mBtnChangeDirectory.setVisibility(View.GONE);
                 mTvTouchToStart.setVisibility(View.GONE);
@@ -543,7 +543,7 @@ public class TriAevumDownloadActivity extends Activity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 pickRomDirectory();
             } else {
-                showError("Permissão de armazenamento necessária para acessar a pasta da ROM");
+                showError("ROM klasörüne erişmek için depolama izni gerekli");
             }
         }
     }
@@ -651,16 +651,16 @@ public class TriAevumDownloadActivity extends Activity {
             mBtnAction.setVisibility(View.GONE);
             mTvTouchToStart.setVisibility(View.GONE);
             mLayoutProgressDetails.setVisibility(View.VISIBLE);
-            mTvStatus.setText("Procurando arquivos da ROM no diretório...");
+            mTvStatus.setText("Klasörde ROM dosyaları aranıyor...");
             mPbDownload.setIndeterminate(true);
             mTvPercent.setText("");
-            mTvDetails.setText("Examinando pasta selecionada...");
+            mTvDetails.setText("Seçilen klasör inceleniyor...");
         });
 
         mExecutor.execute(() -> {
             File targetDir = getExternalFilesDir(null);
             if (targetDir == null) {
-                showError("Armazenamento externo indisponível");
+                showError("Harici depolama kullanılamıyor");
                 return;
             }
             if (!targetDir.exists()) targetDir.mkdirs();
@@ -668,14 +668,14 @@ public class TriAevumDownloadActivity extends Activity {
             try {
                 DocumentFile pickedDir = DocumentFile.fromTreeUri(this, treeUri);
                 if (pickedDir == null || !pickedDir.exists() || !pickedDir.isDirectory()) {
-                    showError("Pasta selecionada não encontrada ou inacessível.");
+                    showError("Seçilen klasör bulunamadı veya erişilemiyor.");
                     return;
                 }
 
                 RomDiscoveryResult result = discoverRomFiles(pickedDir);
 
                 if (!result.hasAnyGameData()) {
-                    showError("Nenhum arquivo da ROM (.3ds, .cci ou code.bin/romfs.bin) encontrado no diretório selecionado.");
+                    showError("Seçilen klasörde ROM dosyası (.3ds, .cci veya code.bin/romfs.bin) bulunamadı.");
                     return;
                 }
 
@@ -687,18 +687,18 @@ public class TriAevumDownloadActivity extends Activity {
 
             } catch (Exception e) {
                 Log.e(TAG, "Erro ao processar diretório da ROM", e);
-                showError("Erro ao processar ROM: " + e.getMessage());
+                showError("ROM işlenirken hata: " + e.getMessage());
             }
         });
     }
 
     private void processExtractedRomFiles(RomDiscoveryResult result, File targetDir) throws Exception {
         mMainHandler.post(() -> {
-            mTvStatus.setText("Arquivos da ROM encontrados! Preparando jogo...");
+            mTvStatus.setText("ROM dosyaları bulundu! Oyun hazırlanıyor...");
             mPbDownload.setIndeterminate(false);
             mPbDownload.setProgress(0);
             mTvPercent.setText("0%");
-            mTvDetails.setText("Copiando arquivos necessários...");
+            mTvDetails.setText("Gerekli dosyalar kopyalanıyor...");
         });
 
         long totalBytes = result.codeBin.length() + result.romfsBin.length();
@@ -711,14 +711,14 @@ public class TriAevumDownloadActivity extends Activity {
 
         // 1. Copiar code.bin
         File destCode = new File(targetDir, "code.bin");
-        copyDocumentToFile(result.codeBin, destCode, "Copiando code.bin", totalBytes, copiedBytes);
+        copyDocumentToFile(result.codeBin, destCode, "code.bin kopyalanıyor", totalBytes, copiedBytes);
 
         // Adaptar USA code se necessário
         try {
             byte[] codeBytes = Files.readAllBytes(destCode.toPath());
             String codeSha = CtrRomExtractor.sha256Hex(codeBytes);
             if ("ef210566e1d9d16879a746dfb063fcbad232f0171d860de906531ecc526cc020".equalsIgnoreCase(codeSha)) {
-                mMainHandler.post(() -> mTvDetails.setText("Adaptando executável regional..."));
+                mMainHandler.post(() -> mTvDetails.setText("Bölgesel çalıştırılabilir dosya uyarlanıyor..."));
                 codeBytes = CtrRomExtractor.adaptUsaCodeToEur(this, codeBytes);
                 try (FileOutputStream fos = new FileOutputStream(destCode)) {
                     fos.write(codeBytes);
@@ -731,12 +731,12 @@ public class TriAevumDownloadActivity extends Activity {
         // 2. Copiar exheader.bin se presente
         if (result.exheaderBin != null) {
             File destExheader = new File(targetDir, "exheader.bin");
-            copyDocumentToFile(result.exheaderBin, destExheader, "Copiando exheader.bin", totalBytes, copiedBytes);
+            copyDocumentToFile(result.exheaderBin, destExheader, "exheader.bin kopyalanıyor", totalBytes, copiedBytes);
         }
 
         // 3. Copiar romfs.bin
         File destRomfs = new File(targetDir, "romfs.bin");
-        copyDocumentToFile(result.romfsBin, destRomfs, "Copiando romfs.bin", totalBytes, copiedBytes);
+        copyDocumentToFile(result.romfsBin, destRomfs, "romfs.bin kopyalanıyor", totalBytes, copiedBytes);
 
         // Normalizar romfs se necessário
         try {
@@ -756,8 +756,8 @@ public class TriAevumDownloadActivity extends Activity {
         // Aplicar tradução PT-BR embutida no romfs.pt.bin
         File romfsPt = new File(targetDir, "romfs.pt.bin");
         mMainHandler.post(() -> {
-            mTvStatus.setText("Aplicando tradução PT-BR...");
-            mTvDetails.setText("Modificando diálogos e texturas...");
+            mTvStatus.setText("PT-BR çevirisi uygulanıyor...");
+            mTvDetails.setText("Diyaloglar ve dokular düzenleniyor...");
         });
         PtBrRomFsPatcher.applyTranslationPack(this, romfsOrig.exists() ? romfsOrig : destRomfs, romfsPt, (msg, pct) -> {
             mMainHandler.post(() -> {
@@ -784,24 +784,24 @@ public class TriAevumDownloadActivity extends Activity {
 
     private void processRomContainerFile(DocumentFile romContainerFile, File targetDir) throws Exception {
         mMainHandler.post(() -> {
-            mTvStatus.setText("ROM encontrada: " + romContainerFile.getName());
+            mTvStatus.setText("ROM bulundu: " + romContainerFile.getName());
             mPbDownload.setIndeterminate(false);
             mPbDownload.setProgress(0);
             mTvPercent.setText("0%");
-            mTvDetails.setText("Copiando arquivo de ROM para processamento...");
+            mTvDetails.setText("ROM dosyası işlenmek üzere kopyalanıyor...");
         });
 
         long romLength = romContainerFile.length();
         long[] copied = new long[]{0};
         File tempRomFile = new File(targetDir, "temp_rom.3ds");
-        copyDocumentToFile(romContainerFile, tempRomFile, "Copiando ROM", romLength, copied);
+        copyDocumentToFile(romContainerFile, tempRomFile, "ROM kopyalanıyor", romLength, copied);
 
         CtrRomExtractor.extractRom(this, tempRomFile, targetDir, (stage, percent) -> {
             mMainHandler.post(() -> {
                 mTvStatus.setText(stage);
                 mPbDownload.setProgress(percent);
                 mTvPercent.setText(percent + "%");
-                mTvDetails.setText("Extraindo e convertendo ROM...");
+                mTvDetails.setText("ROM çıkarılıp dönüştürülüyor...");
             });
         });
 
@@ -818,8 +818,8 @@ public class TriAevumDownloadActivity extends Activity {
 
         File romfsPt = new File(targetDir, "romfs.pt.bin");
         mMainHandler.post(() -> {
-            mTvStatus.setText("Aplicando tradução PT-BR...");
-            mTvDetails.setText("Modificando diálogos e texturas...");
+            mTvStatus.setText("PT-BR çevirisi uygulanıyor...");
+            mTvDetails.setText("Diyaloglar ve dokular düzenleniyor...");
         });
         PtBrRomFsPatcher.applyTranslationPack(this, romfsOrig.exists() ? romfsOrig : destRomfs, romfsPt, (msg, pct) -> {
             mMainHandler.post(() -> {
@@ -847,7 +847,7 @@ public class TriAevumDownloadActivity extends Activity {
         long lastUiUpdate = 0;
         try (InputStream in = getContentResolver().openInputStream(uri);
              OutputStream out = new FileOutputStream(destination)) {
-            if (in == null) throw new IOException("Não foi possível ler " + source.getName());
+            if (in == null) throw new IOException("Okunamadı: " + source.getName());
             byte[] buffer = new byte[1024 * 1024]; // 1MB buffer
             int read;
             while ((read = in.read(buffer)) != -1) {
@@ -878,9 +878,9 @@ public class TriAevumDownloadActivity extends Activity {
             mPbDownload.setIndeterminate(false);
             mPbDownload.setProgress(0);
             mTvPercent.setText("");
-            mTvDetails.setText("Toque no botão abaixo para selecionar a pasta com os arquivos da ROM.");
+            mTvDetails.setText("ROM dosyalarının bulunduğu klasörü seçmek için aşağıdaki düğmeye dokunun.");
             mBtnAction.setVisibility(View.VISIBLE);
-            mBtnAction.setText("Selecionar Pasta da ROM");
+            mBtnAction.setText("ROM Klasörünü Seç");
             mBtnAction.setOnClickListener(v -> requestStoragePermissionAndPickRomDirectory());
             if (mBtnChangeDirectory != null) mBtnChangeDirectory.setVisibility(View.GONE);
         });

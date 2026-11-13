@@ -88,13 +88,13 @@ public final class HudLayoutEditorOverlay extends FrameLayout {
         mHudView.layout(0, 0, mScreenWidth, mScreenHeight);
 
         // Conecta o manipulador de arrasto nos elementos editáveis
-        setupDraggable(R.id.hud_top_left_status, "Vida & Magia");
-        setupDraggable(R.id.hud_btn_a, "Botão A");
-        setupDraggable(R.id.hud_btn_b, "Botão B");
-        setupDraggable(R.id.hud_diamond_cluster, "Itens (X/Y/ZR/ZL)");
-        setupDraggable(R.id.hud_bottom_left_collectibles, "Rúpias");
-        setupDraggable(R.id.hud_minimap_container, "Minimapa");
-        setupDraggable(R.id.hud_dpad_item_cluster, "D-Pad Itens");
+        setupDraggable(R.id.hud_top_left_status, "Can ve Büyü");
+        setupDraggable(R.id.hud_btn_a, "A Düğmesi");
+        setupDraggable(R.id.hud_btn_b, "B Düğmesi");
+        setupDraggable(R.id.hud_diamond_cluster, "Eşyalar (X/Y/ZR/ZL)");
+        setupDraggable(R.id.hud_bottom_left_collectibles, "Rupi");
+        setupDraggable(R.id.hud_minimap_container, "Mini Harita");
+        setupDraggable(R.id.hud_dpad_item_cluster, "D-Pad Eşyaları");
 
         // Carrega posições customizadas salvas previamente, se existirem
         post(this::loadSavedPositions);
@@ -123,14 +123,14 @@ public final class HudLayoutEditorOverlay extends FrameLayout {
         titleBox.setLayoutParams(titleLp);
 
         TextView title = new TextView(getContext());
-        title.setText("✏️ Editor de Layout do HUD");
+        title.setText("✏️ HUD Yerleşim Düzenleyici");
         title.setTextColor(Color.parseColor("#FFC107"));
         title.setTextSize(13);
         title.setTypeface(null, android.graphics.Typeface.BOLD);
         titleBox.addView(title);
 
         TextView sub = new TextView(getContext());
-        sub.setText("Toque e arraste os elementos para onde quiser na tela");
+        sub.setText("Öğeleri ekranda istediğiniz yere dokunup sürükleyin");
         sub.setTextColor(Color.parseColor("#8B9BB4"));
         sub.setTextSize(10);
         titleBox.addView(sub);
@@ -139,7 +139,7 @@ public final class HudLayoutEditorOverlay extends FrameLayout {
 
         // Botão Restaurar Padrão
         Button btnReset = new Button(getContext());
-        btnReset.setText("↺ Padrão");
+        btnReset.setText("↺ Varsayılan");
         btnReset.setTextColor(Color.WHITE);
         btnReset.setTextSize(11);
         btnReset.setBackgroundResource(R.drawable.btn_dark);
@@ -153,7 +153,7 @@ public final class HudLayoutEditorOverlay extends FrameLayout {
 
         // Botão Cancelar
         Button btnCancel = new Button(getContext());
-        btnCancel.setText("Cancelar");
+        btnCancel.setText("İptal");
         btnCancel.setTextColor(Color.WHITE);
         btnCancel.setTextSize(11);
         btnCancel.setBackgroundResource(R.drawable.btn_dark);
@@ -169,7 +169,7 @@ public final class HudLayoutEditorOverlay extends FrameLayout {
 
         // Botão Salvar
         Button btnSave = new Button(getContext());
-        btnSave.setText("💾 Salvar");
+        btnSave.setText("💾 Kaydet");
         btnSave.setTextColor(Color.parseColor("#1A1500"));
         btnSave.setTextSize(11);
         btnSave.setTypeface(null, android.graphics.Typeface.BOLD);
@@ -331,7 +331,7 @@ public final class HudLayoutEditorOverlay extends FrameLayout {
         resetViewTranslation(R.id.hud_bottom_left_collectibles);
         resetViewTranslation(R.id.hud_minimap_container);
         resetViewTranslation(R.id.hud_dpad_item_cluster);
-        Toast.makeText(getContext(), "Posições restauradas para o padrão do XML", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Konumlar varsayılana döndürüldü", Toast.LENGTH_SHORT).show();
     }
 
     private void resetViewTranslation(int viewId) {
@@ -373,7 +373,7 @@ public final class HudLayoutEditorOverlay extends FrameLayout {
             }
 
             Log.i(TAG, "HUD layout saved successfully to " + targetFile.getAbsolutePath());
-            Toast.makeText(getContext(), "Posições do HUD salvas com sucesso!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "HUD konumları kaydedildi!", Toast.LENGTH_SHORT).show();
 
             if (mCallback != null) {
                 mCallback.onSaved(this);
@@ -381,7 +381,7 @@ public final class HudLayoutEditorOverlay extends FrameLayout {
 
         } catch (Throwable t) {
             Log.e(TAG, "Failed to save HUD layout", t);
-            Toast.makeText(getContext(), "Erro ao salvar HUD layout: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "HUD yerleşimi kaydedilemedi: " + t.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 

@@ -79,14 +79,14 @@ public final class TriAevumSaveManager {
     public static String getSaveSummary(Context context) {
         File dir = getSaveDataDir(context);
         if (!dir.exists() || !dir.isDirectory()) {
-            return "Nenhum save encontrado";
+            return "Kayıt bulunamadı";
         }
         int count = countFilesInDir(dir);
         if (count == 0) {
-            return "Nenhum save gravado ainda";
+            return "Henüz kayıt yok";
         }
         long bytes = getDirSizeBytes(dir);
-        return String.format(Locale.getDefault(), "%d arquivo(s) de save (%s)", count, formatBytes(bytes));
+        return String.format(Locale.getDefault(), "%d kayıt dosyası (%s)", count, formatBytes(bytes));
     }
 
     private static int countFilesInDir(File dir) {
@@ -130,7 +130,7 @@ public final class TriAevumSaveManager {
         sExecutor.execute(() -> {
             File saveDir = getSaveDataDir(context);
             if (!saveDir.exists() || countFilesInDir(saveDir) == 0) {
-                getMainHandler().post(() -> callback.onError(new IOException("Nenhum arquivo de save disponível para exportação.")));
+                getMainHandler().post(() -> callback.onError(new IOException("Dışa aktarılacak kayıt dosyası yok.")));
                 return;
             }
 
@@ -141,7 +141,7 @@ public final class TriAevumSaveManager {
                 bos.flush();
 
                 Log.i(TAG, "Exportados com sucesso " + exportedCount + " arquivos de save para " + targetUri);
-                getMainHandler().post(() -> callback.onSuccess("Save exportado com sucesso (" + exportedCount + " arquivos)!"));
+                getMainHandler().post(() -> callback.onSuccess("Kayıt dışa aktarıldı (" + exportedCount + " dosya)!"));
             } catch (Exception e) {
                 Log.e(TAG, "Falha ao exportar save para " + targetUri, e);
                 getMainHandler().post(() -> callback.onError(e));
@@ -224,7 +224,7 @@ public final class TriAevumSaveManager {
                 }
 
                 if (importedCount <= 0) {
-                    throw new IOException("Nenhum arquivo válido encontrado no arquivo selecionado.");
+                    throw new IOException("Seçilen dosyada geçerli kayıt bulunamadı.");
                 }
 
                 // Importação bem-sucedida, limpar backup
@@ -266,7 +266,7 @@ public final class TriAevumSaveManager {
 
     private static int extractZipToDir(Context context, Uri zipUri, File targetDir) throws IOException {
         try (InputStream is = context.getContentResolver().openInputStream(zipUri)) {
-            if (is == null) throw new IOException("Não foi possível abrir o arquivo ZIP para leitura.");
+            if (is == null) throw new IOException("ZIP dosyası okunmak üzere açılamadı.");
             return extractZipStreamToDir(is, targetDir);
         }
     }
@@ -302,7 +302,7 @@ public final class TriAevumSaveManager {
             // Proteção contra ZipSlip / Directory Traversal Vulnerability
             String canonicalOutput = outputFile.getCanonicalPath();
             if (!canonicalOutput.startsWith(canonicalTarget + File.separator) && !canonicalOutput.equals(canonicalTarget)) {
-                throw new SecurityException("Entrada ZIP inválida detectada (ZipSlip): " + entry.getName());
+                throw new SecurityException("Geçersiz ZIP girdisi algılandı (ZipSlip): " + entry.getName());
             }
 
             if (entry.isDirectory()) {

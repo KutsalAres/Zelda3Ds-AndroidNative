@@ -162,7 +162,7 @@ public final class PtBrRomFsPatcher {
 
     public static boolean applyTranslationPack(Context context, File baseRomFs, File outputRomFs, ProgressCallback callback) {
         try {
-            if (callback != null) callback.onProgress("Preparando imagem PT-BR...", 5);
+            if (callback != null) callback.onProgress("PT-BR görüntüsü hazırlanıyor...", 5);
 
             if (outputRomFs.exists() && outputRomFs.length() == EXPECTED_PTBR_ROMFS_SIZE) {
                 Log.i(TAG, "romfs.pt.bin já existe e possui tamanho esperado.");
@@ -170,11 +170,11 @@ public final class PtBrRomFsPatcher {
             }
 
             // 1. Copiar baseRomFs para outputRomFs
-            if (callback != null) callback.onProgress("Copiando base do RomFS...", 15);
+            if (callback != null) callback.onProgress("RomFS tabanı kopyalanıyor...", 15);
             copyFile(baseRomFs, outputRomFs);
 
             // 2. Indexar RomFS
-            if (callback != null) callback.onProgress("Indexando recursos do jogo...", 35);
+            if (callback != null) callback.onProgress("Oyun kaynakları indeksleniyor...", 35);
             long[] offsets = new long[2]; // [0] = fileMetaOffset, [1] = fileDataOffset
             Map<String, RomFsFileInfo> index;
             try (RandomAccessFile raf = new RandomAccessFile(outputRomFs, "rw")) {
@@ -182,7 +182,7 @@ public final class PtBrRomFsPatcher {
                 long fileDataOffset = offsets[1];
 
                 // 3. Abrir o zip embutido nos assets
-                if (callback != null) callback.onProgress("Aplicando tradução PT-BR...", 45);
+                if (callback != null) callback.onProgress("PT-BR çevirisi uygulanıyor...", 45);
                 try (InputStream assetIn = context.getAssets().open("translation/oot3d_ptbr_pack.zip");
                      ZipInputStream zis = new ZipInputStream(new BufferedInputStream(assetIn))) {
 
@@ -233,7 +233,7 @@ public final class PtBrRomFsPatcher {
                         appliedCount++;
                         if (callback != null && appliedCount % 10 == 0) {
                             int pct = 45 + (appliedCount * 45 / 126);
-                            callback.onProgress(String.format("Aplicando tradução (%d/126)...", appliedCount), pct);
+                            callback.onProgress(String.format("Çeviri uygulanıyor (%d/126)...", appliedCount), pct);
                         }
                         zis.closeEntry();
                     }
@@ -242,7 +242,7 @@ public final class PtBrRomFsPatcher {
                 }
             }
 
-            if (callback != null) callback.onProgress("Finalizando tradução...", 95);
+            if (callback != null) callback.onProgress("Çeviri tamamlanıyor...", 95);
             return true;
         } catch (Exception e) {
             Log.e(TAG, "Falha ao aplicar tradução PT-BR", e);

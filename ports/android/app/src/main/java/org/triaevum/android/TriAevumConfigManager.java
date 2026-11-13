@@ -38,12 +38,12 @@ public final class TriAevumConfigManager {
 
     // ------- oot3d_native_game.json ---
     public static final String[] RENDER_SCALE_LABELS = {
-        "0.25x (~240p Original 3DS)",
-        "0.33x (~360p Retrô)",
-        "0.5x (~540p Econômico)",
-        "0.75x (~720p Equilibrado)",
-        "1.0x (Nativo do Display)",
-        "1.5x (Alta Definição)",
+        "0.25x (~240p Orijinal 3DS)",
+        "0.33x (~360p Retro)",
+        "0.5x (~540p Ekonomik)",
+        "0.75x (~720p Dengeli)",
+        "1.0x (Ekran Çözünürlüğü)",
+        "1.5x (Yüksek Çözünürlük)",
         "2.0x (Ultra / Supersampling)"
     };
     public static final float[]  RENDER_SCALE_VALUES = {
@@ -56,15 +56,15 @@ public final class TriAevumConfigManager {
         2.0f
     };
 
-    public static final String[] AA_MODE_LABELS   = { "Desligado", "FXAA", "TAA", "MSAA 2x", "MSAA 4x" };
+    public static final String[] AA_MODE_LABELS   = { "Kapalı", "FXAA", "TAA", "MSAA 2x", "MSAA 4x" };
     public static final String[] AA_MODE_VALUES   = { "Off",       "FXAA", "TAA", "MSAA2x",  "MSAA4x"  };
 
     public static final String[] FRAMERATE_LABELS = {
-        "30 FPS (Original 3DS)",
-        "60 FPS (Nativo / 2x)",
-        "90 FPS (Fluido / 3x)",
-        "120 FPS (Ultra Fluido / 4x)",
-        "Sem Limite (Uncapped)"
+        "30 FPS (Orijinal 3DS)",
+        "60 FPS (Yerel / 2x)",
+        "90 FPS (Akıcı / 3x)",
+        "120 FPS (Ultra Akıcı / 4x)",
+        "Sınırsız (Uncapped)"
     };
     public static final String[] FRAMERATE_VALUES = {
         "Original30",
@@ -75,16 +75,16 @@ public final class TriAevumConfigManager {
     };
 
     // ------- oot3d_native_game.json (Visual Mods) ---
-    public static final String[] GRASS_QUALITY_LABELS = { "Desligada", "Baixa", "Média", "Alta" };
+    public static final String[] GRASS_QUALITY_LABELS = { "Kapalı", "Düşük", "Orta", "Yüksek" };
     public static final String[] GRASS_QUALITY_VALUES = { "Off",       "Low",   "Medium", "High" };
 
     // ------- TriAevum.android.host.json ---
     public static final String[] SURFACE_RES_LABELS = {
-        "480p (Super Leve / Bateria)",
-        "540p (Econômico)",
-        "720p (Equilibrado / Padrão)",
-        "1080p (Alta Resolução)",
-        "Nativo da Tela (Sem Limite)"
+        "480p (Çok Hafif / Pil)",
+        "540p (Ekonomik)",
+        "720p (Dengeli / Varsayılan)",
+        "1080p (Yüksek Çözünürlük)",
+        "Ekran Çözünürlüğü (Sınırsız)"
     };
     public static final int[]    SURFACE_RES_VALUES = {
         480,
@@ -95,43 +95,43 @@ public final class TriAevumConfigManager {
     };
 
     // ------- topscreen_ui.json ---
-    public static final String[] HUD_LAYOUT_LABELS  = { "Normal (Padrão)", "Restoration (MM3D)" };
+    public static final String[] HUD_LAYOUT_LABELS  = { "Normal (Varsayılan)", "Restoration (MM3D)" };
     public static final String[] HUD_LAYOUT_VALUES  = { "normal",          "restoration"        };
 
     // ------- gameplay_cheats.json ---
     public static final String[] CHEAT_ITEM_LABELS = {
-        "Arco & Flechas",
-        "Flecha de Fogo",
-        "Flecha de Gelo",
-        "Flecha de Luz",
-        "Fogo de Din (Din's Fire)",
-        "Vento de Farore (Farore's Wind)",
-        "Amor de Nayru (Nayru's Love)",
-        "Bombas",
+        "Yay ve Oklar",
+        "Ateş Oku",
+        "Buz Oku",
+        "Işık Oku",
+        "Din'in Ateşi (Din's Fire)",
+        "Farore'nin Rüzgârı (Farore's Wind)",
+        "Nayru'nun Aşkı (Nayru's Love)",
+        "Bombalar",
         "Bombchus",
-        "Estilingue (Slingshot)",
-        "Bumerangue",
+        "Sapan (Slingshot)",
+        "Bumerang",
         "Hookshot",
         "Longshot",
-        "Martelo Megaton",
-        "Lente da Verdade (Lens of Truth)",
-        "Ocarina do Tempo",
-        "Feijões Mágicos",
-        "Pote Vazio",
-        "Pote com Fada",
-        "Pote com Poção Vermelha",
-        "Pote com Poção Azul",
-        "Pote com Fogo Azul",
-        "Espada Mestra (Master Sword)",
-        "Espada Biggoron",
-        "Escudo Hylian",
-        "Escudo Espelho (Mirror Shield)",
-        "Túnica Goron",
-        "Túnica Zora",
-        "Botas de Ferro (Iron Boots)",
-        "Botas Flutuantes (Hover Boots)",
-        "Luvas Douradas (Golden Gauntlets)",
-        "Escama Dourada (Golden Scale)"
+        "Megaton Çekiç",
+        "Hakikat Merceği (Lens of Truth)",
+        "Zamanın Okarinası",
+        "Sihirli Fasulyeler",
+        "Boş Şişe",
+        "Perili Şişe",
+        "Kırmızı İksirli Şişe",
+        "Mavi İksirli Şişe",
+        "Mavi Ateşli Şişe",
+        "Usta Kılıç (Master Sword)",
+        "Biggoron Kılıcı",
+        "Hylia Kalkanı",
+        "Ayna Kalkanı (Mirror Shield)",
+        "Goron Tuniği",
+        "Zora Tuniği",
+        "Demir Botlar (Iron Boots)",
+        "Süzülen Botlar (Hover Boots)",
+        "Altın Eldivenler (Golden Gauntlets)",
+        "Altın Pul (Golden Scale)"
     };
 
     public static final String[] CHEAT_ITEM_KEYS = {

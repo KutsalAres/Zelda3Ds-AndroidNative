@@ -286,12 +286,10 @@ public final class TriAevumActivity extends Activity {
                 android.content.SharedPreferences prefs = getApplicationContext()
                     .getSharedPreferences("org.triaevum.android_preferences", Context.MODE_PRIVATE);
                 boolean showOverlay = prefs.getBoolean("EmulationMenuSettings_ShowOverlay", true);
-                boolean autoHide = prefs.getBoolean("EmulationMenuSettings_AutoHideGamepad", true);
                 boolean haptic = prefs.getBoolean("EmulationMenuSettings_HapticFeedback", true);
                 boolean swapScreens = prefs.getBoolean("EmulationMenuSettings_SwapScreens", false);
                 boolean touchEnabled = prefs.getBoolean("EmulationMenuSettings_TouchEnabled", false);
                 mWindroidOverlay.setShowControls(showOverlay);
-                mWindroidOverlay.setAutoHideGamepad(autoHide);
                 mWindroidOverlay.setHapticFeedbackEnabled(haptic);
                 mWindroidOverlay.setTouchEnabled(touchEnabled);
                 AndroidNativeInputTarget.nativeSwapScreens(swapScreens);
@@ -421,7 +419,7 @@ public final class TriAevumActivity extends Activity {
         title.setGravity(Gravity.CENTER);
 
         TextView subtitle = new TextView(this);
-        subtitle.setText("⚡ Pré-carregando texturas personalizadas...");
+        subtitle.setText("⚡ Özel dokular önceden yükleniyor...");
         subtitle.setTextColor(0xFFECEFF4);
         subtitle.setTextSize(14);
         subtitle.setGravity(Gravity.CENTER);
@@ -436,14 +434,14 @@ public final class TriAevumActivity extends Activity {
         progressBar.setLayoutParams(pbLp);
 
         TextView tvDetails = new TextView(this);
-        tvDetails.setText("Indexando texturas...");
+        tvDetails.setText("Dokular indeksleniyor...");
         tvDetails.setTextColor(0xFF90A4AE);
         tvDetails.setTextSize(12);
         tvDetails.setGravity(Gravity.CENTER);
         tvDetails.setPadding(0, 10, 0, 16);
 
         Button btnSkip = new Button(this);
-        btnSkip.setText("Pular e Iniciar");
+        btnSkip.setText("Atla ve Başlat");
         btnSkip.setTextColor(0xFFCFD8DC);
         btnSkip.setTextSize(12);
         btnSkip.setBackgroundColor(0x33FFFFFF);
@@ -487,7 +485,7 @@ public final class TriAevumActivity extends Activity {
                         if (total > 0) {
                             int pct = (int)((loaded * 100L) / total);
                             progressBar.setProgress(pct);
-                            tvDetails.setText(String.format(Locale.getDefault(), "%d / %d texturas (%d%%)", loaded, total, pct));
+                            tvDetails.setText(String.format(Locale.getDefault(), "%d / %d doku (%d%%)", loaded, total, pct));
                         }
                     });
                 });
@@ -596,7 +594,18 @@ public final class TriAevumActivity extends Activity {
     }
 
     private boolean isPhysicalGamepadConnected() {
-        return GameControllerDetector.hasPhysicalGamepadConnected();
+        int[] deviceIds = InputDevice.getDeviceIds();
+        for (int id : deviceIds) {
+            InputDevice dev = InputDevice.getDevice(id);
+            if (dev != null && !dev.isVirtual()) {
+                int sources = dev.getSources();
+                if (((sources & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD) ||
+                    ((sources & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void updateControllerConnectionState() {
@@ -606,23 +615,12 @@ public final class TriAevumActivity extends Activity {
                 boolean wasConnected = mWindroidOverlay.isGamepadConnected();
                 if (wasConnected != connected) {
                     mWindroidOverlay.setGamepadConnected(connected);
-                    boolean autoHide = mWindroidOverlay.isAutoHideGamepad();
                     if (connected) {
-                        if (autoHide) {
-                            Toast.makeText(this, "Controle conectado: controles na tela ocultados", Toast.LENGTH_SHORT).show();
-                            Log.i(TAG, "Controle físico detectado - controles virtuais ocultados");
-                        } else {
-                            Toast.makeText(this, "Controle conectado", Toast.LENGTH_SHORT).show();
-                            Log.i(TAG, "Controle físico detectado - controles virtuais mantidos visíveis");
-                        }
+                        Toast.makeText(this, "Kumanda bağlandı: ekran kontrolleri gizlendi", Toast.LENGTH_SHORT).show();
+                        Log.i(TAG, "Controle físico detectado - controles virtuais ocultados");
                     } else {
-                        if (autoHide) {
-                            Toast.makeText(this, "Controle desconectado: controles na tela restaurados", Toast.LENGTH_SHORT).show();
-                            Log.i(TAG, "Controle físico desconectado - controles virtuais restaurados");
-                        } else {
-                            Toast.makeText(this, "Controle desconectado", Toast.LENGTH_SHORT).show();
-                            Log.i(TAG, "Controle físico desconectado");
-                        }
+                        Toast.makeText(this, "Kumanda bağlantısı kesildi: ekran kontrolleri geri getirildi", Toast.LENGTH_SHORT).show();
+                        Log.i(TAG, "Controle físico desconectado - controles virtuais restaurados");
                     }
                 }
             }
@@ -631,15 +629,17 @@ public final class TriAevumActivity extends Activity {
 
     @Override
     public boolean dispatchKeyEvent(android.view.KeyEvent event) {
-        InputDevice dev = event.getDevice();
-        boolean isController = GameControllerDetector.isGameController(dev);
-        if (isController && mWindroidOverlay != null && !mWindroidOverlay.isGamepadConnected()) {
+        int source = event.getSource();
+        if (((source & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD ||
+             (source & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK) &&
+            mWindroidOverlay != null && !mWindroidOverlay.isGamepadConnected()) {
             updateControllerConnectionState();
         }
         if (mInputTarget != null) {
             int keyCode = event.getKeyCode();
             if (keyCode == android.view.KeyEvent.KEYCODE_BACK) {
-                if (!isController) {
+                if ((source & android.view.InputDevice.SOURCE_GAMEPAD) != android.view.InputDevice.SOURCE_GAMEPAD &&
+                    (source & android.view.InputDevice.SOURCE_JOYSTICK) != android.view.InputDevice.SOURCE_JOYSTICK) {
                     return super.dispatchKeyEvent(event);
                 }
             }
@@ -659,8 +659,8 @@ public final class TriAevumActivity extends Activity {
 
     @Override
     public boolean onGenericMotionEvent(android.view.MotionEvent event) {
-        InputDevice dev = event.getDevice();
-        if (mInputTarget != null && GameControllerDetector.isGameController(dev)) {
+        if (mInputTarget != null && ((event.getSource() & android.view.InputDevice.SOURCE_JOYSTICK) == android.view.InputDevice.SOURCE_JOYSTICK ||
+                                     (event.getSource() & android.view.InputDevice.SOURCE_GAMEPAD) == android.view.InputDevice.SOURCE_GAMEPAD)) {
             if (mWindroidOverlay != null && !mWindroidOverlay.isGamepadConnected()) {
                 updateControllerConnectionState();
             }
@@ -861,7 +861,7 @@ public final class TriAevumActivity extends Activity {
         File root = getExternalFilesDir(null);
         if (root != null) {
             exportHudLayoutFromXml(root);
-            android.widget.Toast.makeText(this, "Layout do HUD restaurado para o padrão!", android.widget.Toast.LENGTH_SHORT).show();
+            android.widget.Toast.makeText(this, "HUD yerleşimi varsayılana döndürüldü!", android.widget.Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -890,14 +890,14 @@ public final class TriAevumActivity extends Activity {
         titleBox.setLayoutParams(titleLp);
 
         TextView title = new TextView(this);
-        title.setText("🎮 Editor de Controles Virtuais");
+        title.setText("🎮 Sanal Kontrol Düzenleyici");
         title.setTextColor(Color.parseColor("#FFC107"));
         title.setTextSize(13);
         title.setTypeface(null, android.graphics.Typeface.BOLD);
         titleBox.addView(title);
 
         TextView sub = new TextView(this);
-        sub.setText("Toque e arraste os botões para onde quiser na tela");
+        sub.setText("Düğmeleri ekranda istediğiniz yere dokunup sürükleyin");
         sub.setTextColor(Color.parseColor("#8B9BB4"));
         sub.setTextSize(10);
         titleBox.addView(sub);
@@ -908,7 +908,7 @@ public final class TriAevumActivity extends Activity {
 
         // Botão Restaurar Padrão
         Button btnReset = new Button(this);
-        btnReset.setText("↺ Padrão");
+        btnReset.setText("↺ Varsayılan");
         btnReset.setTextColor(Color.WHITE);
         btnReset.setTextSize(11);
         btnReset.setBackgroundResource(R.drawable.btn_dark);
@@ -919,13 +919,13 @@ public final class TriAevumActivity extends Activity {
         btnReset.setPadding(padH, 0, padH, 0);
         btnReset.setOnClickListener(v -> {
             mWindroidOverlay.resetControlPositions();
-            android.widget.Toast.makeText(this, "Posições dos controles restauradas para o padrão!", android.widget.Toast.LENGTH_SHORT).show();
+            android.widget.Toast.makeText(this, "Kontrol konumları varsayılana döndürüldü!", android.widget.Toast.LENGTH_SHORT).show();
         });
         bar.addView(btnReset);
 
         // Botão Cancelar
         Button btnCancel = new Button(this);
-        btnCancel.setText("Cancelar");
+        btnCancel.setText("İptal");
         btnCancel.setTextColor(Color.WHITE);
         btnCancel.setTextSize(11);
         btnCancel.setBackgroundResource(R.drawable.btn_dark);
@@ -942,7 +942,7 @@ public final class TriAevumActivity extends Activity {
 
         // Botão Salvar
         Button btnSave = new Button(this);
-        btnSave.setText("💾 Salvar");
+        btnSave.setText("💾 Kaydet");
         btnSave.setTextColor(Color.parseColor("#1A1500"));
         btnSave.setTextSize(11);
         btnSave.setTypeface(null, android.graphics.Typeface.BOLD);
@@ -954,7 +954,7 @@ public final class TriAevumActivity extends Activity {
         btnSave.setOnClickListener(v -> {
             mWindroidOverlay.saveControlPositions();
             mLayout.removeView(bar);
-            android.widget.Toast.makeText(this, "Posições dos controles salvas com sucesso!", android.widget.Toast.LENGTH_SHORT).show();
+            android.widget.Toast.makeText(this, "Kontrol konumları kaydedildi!", android.widget.Toast.LENGTH_SHORT).show();
         });
         bar.addView(btnSave);
 
@@ -1001,7 +1001,7 @@ public final class TriAevumActivity extends Activity {
             startActivityForResult(intent, REQUEST_CODE_INSTALL_DRIVER);
         } catch (Exception e) {
             Log.e(TAG, "Falha ao iniciar seletor de driver", e);
-            android.widget.Toast.makeText(this, "Erro ao abrir seletor de arquivos: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
+            android.widget.Toast.makeText(this, "Dosya seçici açılamadı: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
         }
     }
 
@@ -1022,7 +1022,7 @@ public final class TriAevumActivity extends Activity {
             startActivityForResult(intent, REQUEST_CODE_SELECT_TEXTURE_DIR);
         } catch (Exception e) {
             Log.e(TAG, "Falha ao iniciar seletor de diretório de texturas", e);
-            android.widget.Toast.makeText(this, "Erro ao abrir seletor de pasta: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
+            android.widget.Toast.makeText(this, "Klasör seçici açılamadı: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
         }
     }
 
@@ -1037,7 +1037,7 @@ public final class TriAevumActivity extends Activity {
             startActivityForResult(intent, REQUEST_CODE_EXPORT_SAVE);
         } catch (Exception e) {
             Log.e(TAG, "Falha ao iniciar seletor de exportação de save", e);
-            android.widget.Toast.makeText(this, "Erro ao abrir seletor de arquivo: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
+            android.widget.Toast.makeText(this, "Dosya seçici açılamadı: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
         }
     }
 
@@ -1056,7 +1056,7 @@ public final class TriAevumActivity extends Activity {
             startActivityForResult(intent, REQUEST_CODE_IMPORT_SAVE);
         } catch (Exception e) {
             Log.e(TAG, "Falha ao iniciar seletor de importação de save", e);
-            android.widget.Toast.makeText(this, "Erro ao abrir seletor de arquivo: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
+            android.widget.Toast.makeText(this, "Dosya seçici açılamadı: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
         }
     }
 
@@ -1090,7 +1090,7 @@ public final class TriAevumActivity extends Activity {
 
         Uri uri = data.getData();
         if (requestCode == REQUEST_CODE_EXPORT_SAVE) {
-            android.widget.Toast.makeText(this, "Exportando save...", android.widget.Toast.LENGTH_SHORT).show();
+            android.widget.Toast.makeText(this, "Kayıt dışa aktarılıyor...", android.widget.Toast.LENGTH_SHORT).show();
             TriAevumSaveManager.exportSaveToUri(this, uri, new TriAevumSaveManager.SaveCallback<String>() {
                 @Override
                 public void onSuccess(String result) {
@@ -1102,15 +1102,15 @@ public final class TriAevumActivity extends Activity {
 
                 @Override
                 public void onError(Exception error) {
-                    android.widget.Toast.makeText(TriAevumActivity.this, "❌ Erro ao exportar save: " + error.getMessage(), android.widget.Toast.LENGTH_LONG).show();
+                    android.widget.Toast.makeText(TriAevumActivity.this, "❌ Kayıt dışa aktarılamadı: " + error.getMessage(), android.widget.Toast.LENGTH_LONG).show();
                 }
             });
         } else if (requestCode == REQUEST_CODE_IMPORT_SAVE) {
-            android.widget.Toast.makeText(this, "Importando save...", android.widget.Toast.LENGTH_SHORT).show();
+            android.widget.Toast.makeText(this, "Kayıt içe aktarılıyor...", android.widget.Toast.LENGTH_SHORT).show();
             TriAevumSaveManager.importSaveFromUri(this, uri, new TriAevumSaveManager.SaveCallback<Integer>() {
                 @Override
                 public void onSuccess(Integer count) {
-                    android.widget.Toast.makeText(TriAevumActivity.this, "✅ Save importado com sucesso (" + count + " arquivos)!", android.widget.Toast.LENGTH_LONG).show();
+                    android.widget.Toast.makeText(TriAevumActivity.this, "✅ Kayıt içe aktarıldı (" + count + " dosya)!", android.widget.Toast.LENGTH_LONG).show();
                     if (mSaveActionListener != null) {
                         mSaveActionListener.onSaveOperationCompleted();
                     }
@@ -1118,7 +1118,7 @@ public final class TriAevumActivity extends Activity {
 
                 @Override
                 public void onError(Exception error) {
-                    android.widget.Toast.makeText(TriAevumActivity.this, "❌ Erro ao importar save: " + error.getMessage(), android.widget.Toast.LENGTH_LONG).show();
+                    android.widget.Toast.makeText(TriAevumActivity.this, "❌ Kayıt içe aktarılamadı: " + error.getMessage(), android.widget.Toast.LENGTH_LONG).show();
                 }
             });
         } else if (requestCode == REQUEST_CODE_SELECT_TEXTURE_DIR) {
@@ -1132,15 +1132,16 @@ public final class TriAevumActivity extends Activity {
                 config.setCustomTexturesPath(resolvedPath);
                 config.setCustomTexturesEnabled(true);
                 TriAevumConfigManager.nativeReloadGraphicsSettings();
-                android.widget.Toast.makeText(this, "✅ Pasta de texturas selecionada:\n" + resolvedPath, android.widget.Toast.LENGTH_LONG).show();
+                android.widget.Toast.makeText(this, "✅ Doku klasörü seçildi:
+" + resolvedPath, android.widget.Toast.LENGTH_LONG).show();
                 if (mTextureDirSelectedListener != null) {
                     mTextureDirSelectedListener.onTextureDirSelected(resolvedPath);
                 }
             } else {
-                android.widget.Toast.makeText(this, "⚠️ Não foi possível resolver o caminho do diretório selecionado.", android.widget.Toast.LENGTH_LONG).show();
+                android.widget.Toast.makeText(this, "⚠️ Seçilen klasörün yolu çözümlenemedi.", android.widget.Toast.LENGTH_LONG).show();
             }
         } else if (requestCode == REQUEST_CODE_INSTALL_DRIVER) {
-            android.widget.Toast.makeText(this, "Instalando driver Turnip...", android.widget.Toast.LENGTH_SHORT).show();
+            android.widget.Toast.makeText(this, "Turnip sürücüsü kuruluyor...", android.widget.Toast.LENGTH_SHORT).show();
             new Thread(() -> {
                 try {
                     String fileName = "turnip_driver.zip";
@@ -1163,7 +1164,8 @@ public final class TriAevumActivity extends Activity {
 
                     runOnUiThread(() -> {
                         android.widget.Toast.makeText(TriAevumActivity.this,
-                                "✅ Driver instalado: " + installed.name + "\nReinicie o jogo para aplicar.",
+                                "✅ Sürücü kuruldu: " + installed.name + "
+Uygulamak için oyunu yeniden başlatın.",
                                 android.widget.Toast.LENGTH_LONG).show();
                         if (mDriverInstallListener != null) {
                             mDriverInstallListener.onDriverInstalled(installed);
@@ -1173,7 +1175,7 @@ public final class TriAevumActivity extends Activity {
                     Log.e(TAG, "Erro ao instalar driver Turnip", e);
                     runOnUiThread(() -> {
                         android.widget.Toast.makeText(TriAevumActivity.this,
-                                "❌ Erro ao instalar driver: " + e.getMessage(),
+                                "❌ Sürücü kurulamadı: " + e.getMessage(),
                                 android.widget.Toast.LENGTH_LONG).show();
                     });
                 }

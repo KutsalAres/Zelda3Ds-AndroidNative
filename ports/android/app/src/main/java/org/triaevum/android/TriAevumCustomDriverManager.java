@@ -199,7 +199,7 @@ public final class TriAevumCustomDriverManager {
         CustomDriverInfo installed = loadDriverFromDir(targetDir);
         if (installed == null || !installed.isValid()) {
             deleteRecursive(targetDir);
-            throw new IllegalArgumentException("O arquivo ZIP não contém um driver Vulkan (.so) válido.");
+            throw new IllegalArgumentException("ZIP dosyasında geçerli bir Vulkan sürücüsü (.so) yok.");
         }
 
         // Auto-select newly installed driver
